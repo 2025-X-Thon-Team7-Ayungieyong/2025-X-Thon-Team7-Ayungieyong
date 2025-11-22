@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loadingGif from '../../assets/loading.gif';
 
@@ -16,6 +16,58 @@ export default function PopUp({ onClose }) {
   const [uploadFile, setUploadFile] = useState([]);
 
   const [questions, setQuestions] = useState([]);
+
+  const [cameraOk, setCameraOk] = useState(false);
+  const [micOk, setMicOk] = useState(false);
+
+  const [mediaStream, setMediaStream] = useState(null);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (step !== 4) return;
+
+    async function checkDevices() {
+      try {
+        if (mediaStream) {
+          mediaStream.getTracks().forEach((t) => t.stop());
+          setMediaStream(null);
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+
+        setMediaStream(stream);
+
+        // 카메라／마이크 체크
+        const videoTrack = stream.getVideoTracks()[0];
+        const audioTrack = stream.getAudioTracks()[0];
+
+        setCameraOk(!!videoTrack);
+        setMicOk(!!audioTrack);
+
+        const videoElement = document.getElementById('previewVideo');
+        if (videoElement) {
+          videoElement.srcObject = stream;
+        }
+      } catch (err) {
+        console.error('디바이스 체크 실패:', err);
+        setCameraOk(false);
+        setMicOk(false);
+      }
+    }
+
+    checkDevices();
+  }, [step]);
+
+  useEffect(() => {
+    return () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((t) => t.stop());
+      }
+    };
+  }, [mediaStream]);
 
   return (
     <div
@@ -103,7 +155,7 @@ export default function PopUp({ onClose }) {
         {step === 2 && (
           <div>
             <h2>파일 업로드 (Step 2)</h2>
-            <p>이력서/자소서를 업로드 해주세요.</p>
+            <p>자기소개서/포트폴리오를 업로드 해주세요.</p>
 
             {/* 숨겨진 input */}
             <input
@@ -165,7 +217,6 @@ export default function PopUp({ onClose }) {
                   <div>자기소개서 업로드</div>
                 </>
               ) : (
-                // 파일 업로드 후에는 파일명만 표시
                 <div>{uploadFile.resume.name}</div>
               )}
             </div>
@@ -202,7 +253,7 @@ export default function PopUp({ onClose }) {
             <button
               onClick={() => {
                 if (!uploadFile.portfolio || !uploadFile.resume) {
-                  alert('이력서와 자소서를 모두 업로드해주세요.');
+                  alert('자기소개서와 포트폴리오를 모두 업로드해주세요.');
                   return;
                 }
 
@@ -305,6 +356,7 @@ export default function PopUp({ onClose }) {
               <button onClick={handlePrev}>이전</button>
               <button
                 onClick={() => {
+                  // 질문이 1개 이상이면 빈 값 체크
                   if (questions.length > 0) {
                     const hasEmpty = questions.some((q) => !q.trim());
                     if (hasEmpty) {
@@ -324,12 +376,82 @@ export default function PopUp({ onClose }) {
 
         {step === 4 && (
           <div>
-            <h2>디바이스 체크 (Step 4)</h2>
-            <p>카메라/마이크 테스트</p>
-            <button onClick={handlePrev}>이전</button>
+            <h2>디바이스 체크</h2>
+
+            {/* 캠 미리보기 영역 */}
+            <div
+              style={{
+                width: '100%',
+                height: '220px',
+                backgroundColor: '#eee',
+                borderRadius: '10px',
+                overflow: 'hidden',
+                marginBottom: '15px',
+              }}
+            >
+              <video
+                id="previewVideo"
+                autoPlay
+                playsInline
+                muted
+                style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }}
+              />
+            </div>
+
+            {/* 상태 표시 */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              {/* 카메라 상태 */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: '8px',
+                  borderRadius: '8px',
+                  backgroundColor: cameraOk ? '#d4f7d4' : '#ffd4d4',
+                  color: cameraOk ? '#0a7a0a' : '#b80000',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {cameraOk ? '📷 카메라 연결됨' : '📷 카메라 연결 안됨'}
+              </div>
+
+              {/* 마이크 상태 */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: '8px',
+                  borderRadius: '8px',
+                  backgroundColor: micOk ? '#d4f7d4' : '#ffd4d4',
+                  color: micOk ? '#0a7a0a' : '#b80000',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {micOk ? '🎤 마이크 연결됨' : '🎤 마이크 연결 안됨'}
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                if (mediaStream) {
+                  mediaStream.getTracks().forEach((t) => t.stop());
+                }
+                handlePrev();
+              }}
+            >
+              이전
+            </button>
+
             <button
               onClick={async () => {
-                setStep(5); // 로딩 화면
+                if (!cameraOk || !micOk) {
+                  alert('카메라 또는 마이크가 연결되지 않았습니다.');
+                  return;
+                }
+                setStep(5);
 
                 try {
                   await new Promise((resolve) => setTimeout(resolve, 1500));
