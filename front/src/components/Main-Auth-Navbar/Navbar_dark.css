@@ -1,0 +1,41 @@
+/* 완전 투명한 네비게이션 바 */
+.navbar-dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 18px 40px;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.navbar-dark-logo {
+  height: 40px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* 로그아웃 버튼 */
+.navbar-dark-logout {
+  background: white;
+  color: #0a1a40;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.logout-btn-dark:hover {
+  opacity: 0.85;
+}
