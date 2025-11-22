@@ -3,15 +3,39 @@ const questionModel = require("../models/questionModel");
 
 class InterviewService {
   // 면접 생성
-  async createInterview(userId, { title, jobCategory, questions = [] }) {
+  async createInterview(
+    userId,
+    { title, company, jobCategory, questions = [] }
+  ) {
+    const normalizedQuestions = Array.isArray(questions)
+      ? questions
+          .map((q) => {
+            if (typeof q === "string") {
+              return { questionText: q.trim() };
+            }
+
+            if (q && typeof q === "object") {
+              return {
+                questionText: q.questionText || q.title || "",
+                answerGuide: q.answerGuide || null,
+                timeLimit: q.timeLimit,
+              };
+            }
+
+            return null;
+          })
+          .filter((q) => q && q.questionText)
+      : [];
+
     const interviewId = await interviewModel.create({
       userId,
       title,
+      company,
       jobCategory,
     });
 
-    if (questions.length > 0) {
-      await questionModel.createMultiple(interviewId, questions);
+    if (normalizedQuestions.length > 0) {
+      await questionModel.createMultiple(interviewId, normalizedQuestions);
     }
 
     return await interviewModel.findByIdWithQuestions(interviewId);

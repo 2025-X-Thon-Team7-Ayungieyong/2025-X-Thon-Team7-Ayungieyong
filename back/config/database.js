@@ -49,6 +49,7 @@ class Database {
           id INT AUTO_INCREMENT PRIMARY KEY,
           user_id INT NOT NULL DEFAULT 1,
           title VARCHAR(200) NOT NULL,
+          company VARCHAR(200) NOT NULL,
           job_category VARCHAR(100) NOT NULL,
           status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending',
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -56,6 +57,7 @@ class Database {
           completed_at TIMESTAMP NULL,
           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
           INDEX idx_user_status (user_id, status)
+
         )`,
 
         // questions 테이블
@@ -106,6 +108,16 @@ class Database {
 
       for (const query of tables) {
         await connection.query(query);
+      }
+
+      // Ensure legacy tables have required columns
+      const [companyCol] = await connection.query(
+        "SHOW COLUMNS FROM interviews LIKE 'company'"
+      );
+      if (!companyCol || companyCol.length === 0) {
+        await connection.query(
+          "ALTER TABLE interviews ADD COLUMN company VARCHAR(200) NOT NULL DEFAULT '' AFTER title"
+        );
       }
 
       // 기본 사용자 생성
