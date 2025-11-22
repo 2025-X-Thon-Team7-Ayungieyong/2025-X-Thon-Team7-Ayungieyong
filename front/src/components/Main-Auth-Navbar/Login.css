@@ -1,0 +1,72 @@
+/* 전체 화면 배경 */
+.login-container {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../../assets/main_background.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 로그인 카드 */
+.login-card {
+  width: 340px;
+  padding: 40px 45px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05); /* 아주 옅은 투명 박스 */
+  backdrop-filter: blur(12px); /* 유리 효과 */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.45);
+}
+
+/* LOGIN 제목 */
+.login-title {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 55px;
+  font-weight: 700;
+  color: #f5f5f5;
+  margin-bottom: 35px;
+}
+
+/* input 공통 */
+.login-input {
+  width: 320px;
+  height: 48px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: none;
+  padding: 0 14px;
+  font-size: 16px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* 로그인 버튼 */
+.login-button {
+  width: 348px;
+  height: 50px;
+  margin-top: 40px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(270deg, #7326f5 0%, #2006a7 50%, #0a091a 100%);
+  box-shadow: 0px 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* 회원가입 버튼 */
+.signup-button {
+  margin-top: 15px;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #7eb3ff;
+  font-size: 15px;
+  cursor: pointer;
+}

@@ -161,6 +161,10 @@ function InterviewRecord() {
       // 서버 업로드
       await uploadVideoToServer(blob, questionIndex + 1);
 
+    recorder.onstop = () => {
+      const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+      console.log('Saved webm size:', blob.size);
+
       // webm → mp4 저장 형식 변환
       // const mp4Blob = await convertToMP4(webmBlob);
 
