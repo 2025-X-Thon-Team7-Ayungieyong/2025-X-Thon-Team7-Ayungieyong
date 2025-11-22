@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 export default function Login() {
   const [id, setId] = useState('');
@@ -10,31 +11,31 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (id === '1234' && password === '1234') {
-      navigate('/');
+      navigate('/home');
     } else {
       alert('아이디와 비밀번호가 맞지 않습니다!');
     }
-    console.log({ id, password });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+    <div className="login-container">
+      <form className="login-card" onSubmit={handleSubmit}>
+        <div className="login-title">LOGIN</div>
 
-      <label>
         <input
           type="text"
+          className="login-input"
           value={id}
           onChange={(e) => setId(e.target.value)}
           placeholder="아이디"
           autoComplete="username"
         />
-      </label>
 
-      <label>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
             type={showPassword ? 'text' : 'password'}
+            className="login-input"
+            style={{ marginBottom: 0 }}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호"
@@ -43,21 +44,25 @@ export default function Login() {
           <span
             onClick={() => setShowPassword((v) => !v)}
             style={{
+              marginLeft: '-35px',
               cursor: 'pointer',
               userSelect: 'none',
+              fontSize: '20px',
+              color: '#ffffff',
             }}
           >
             {showPassword ? '🔓' : '🔒'}
           </span>
         </div>
-      </label>
 
-      <div>
-        <button type="submit">로그인</button>
-        <button type="button" onClick={() => navigate('/signup')}>
+        <button type="submit" className="login-button">
+          로그인
+        </button>
+
+        <button type="button" className="signup-button" onClick={() => navigate('/signup')}>
           회원가입
         </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }

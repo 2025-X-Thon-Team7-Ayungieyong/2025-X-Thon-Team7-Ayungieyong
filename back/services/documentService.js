@@ -1,32 +1,25 @@
 const documentModel = require("../models/documentModel");
 const fs = require("fs");
-const path = require("path");
 
 class DocumentService {
-  // 문서 업로드 (portfolio 또는 introduce, 각 1개씩만 가능)
+  // 문서 업로드
   async uploadDocument(userId, file, documentType) {
-    // documentType 검증
     if (!["portfolio", "introduce"].includes(documentType)) {
       throw new Error("문서 타입은 portfolio 또는 introduce만 가능합니다.");
     }
 
-    // 이미 해당 타입의 문서가 존재하는지 확인
     const existingDoc = await documentModel.findByUserIdAndType(
       userId,
       documentType
     );
 
     if (existingDoc) {
-      // 기존 파일 삭제
       if (fs.existsSync(existingDoc.file_path)) {
         fs.unlinkSync(existingDoc.file_path);
       }
-
-      // DB에서 기존 문서 삭제
       await documentModel.deleteByType(userId, documentType);
     }
 
-    // 새 문서 생성
     const documentId = await documentModel.create({
       userId,
       fileName: file.originalname,
@@ -38,7 +31,7 @@ class DocumentService {
     return await documentModel.findById(documentId);
   }
 
-  // 문서 분석
+  // 문서 분석 (AI 에이전트 위임)
   async analyzeDocument(documentId, userId) {
     const document = await documentModel.findById(documentId);
 
@@ -50,22 +43,53 @@ class DocumentService {
       throw new Error("접근 권한이 없습니다.");
     }
 
-    // TODO: PDF 텍스트 추출
-    const extractedText = `문서에서 추출된 텍스트 내용...`;
+    try {
+      // AI 에이전트 로드 시도
+      const aiAgents = require("../ai-agents");
+      const { documentReaderAgent } = aiAgents;
 
-    await documentModel.updateExtractedText(documentId, extractedText);
+      // 에이전트 존재 및 함수 확인
+      if (!documentReaderAgent?.extractAndSummarize) {
+        throw new Error("AI agent not implemented");
+      }
 
-    return {
-      documentId,
-      documentType: document.document_type,
-      fileName: document.file_name,
-      extractedText,
-      analysis: {
-        keyPoints: ["주요 포인트 1", "주요 포인트 2"],
-        skills: ["Python", "JavaScript"],
-        summary: "문서 요약",
-      },
-    };
+      // AI 에이전트로 PDF 텍스트 추출 및 요약
+      const extracted = await documentReaderAgent.extractAndSummarize(
+        document.file_path
+      );
+
+      // DB에 추출된 텍스트 저장
+      await documentModel.updateExtractedText(
+        documentId,
+        extracted.rawText || ""
+      );
+
+      return {
+        documentId,
+        documentType: document.document_type,
+        fileName: document.file_name,
+        extractedText: extracted.rawText || "",
+        analysis: {
+          summary: extracted.summary || "",
+          keyPoints: extracted.keyPoints || [],
+          skills: extracted.skills || [],
+        },
+      };
+    } catch (error) {
+      // AI 에이전트 미구현 에러
+      if (
+        error.message.includes("not implemented") ||
+        error.code === "MODULE_NOT_FOUND"
+      ) {
+        throw new Error(
+          "문서 분석 AI 기능이 아직 구현되지 않았습니다. AI 담당자에게 문의하세요."
+        );
+      }
+
+      // 기타 에러
+      console.error("Document analysis error:", error);
+      throw new Error("문서 분석 중 오류가 발생했습니다.");
+    }
   }
 
   // 사용자의 모든 문서 조회
@@ -110,7 +134,6 @@ class DocumentService {
       throw new Error("접근 권한이 없습니다.");
     }
 
-    // 파일 삭제
     if (fs.existsSync(document.file_path)) {
       fs.unlinkSync(document.file_path);
     }
