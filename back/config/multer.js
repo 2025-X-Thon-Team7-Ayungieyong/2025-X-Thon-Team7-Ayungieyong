@@ -18,8 +18,10 @@ const storage = multer.diskStorage({
 
     if (file.fieldname === "portfolio" || file.fieldname === "introduce") {
       uploadPath = "uploads/documents";
+      console.log("Document upload path set to uploads/documents");
     } else if (file.fieldname === "video") {
       uploadPath = "uploads/videos";
+      console.log("Video upload path set to uploads/videos");
     }
 
     cb(null, uploadPath);
