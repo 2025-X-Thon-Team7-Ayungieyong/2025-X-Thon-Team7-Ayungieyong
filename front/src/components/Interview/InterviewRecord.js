@@ -179,6 +179,18 @@ function InterviewRecord() {
       // setTimeout(() => URL.revokeObjectURL(url), 1000);
 
       // 다음 질문으로 이동
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `interview_${questionIndex + 1}.webm`; // 파일명
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
       handleNextQuestion();
     };
 
