@@ -103,7 +103,9 @@ function InterviewRecord() {
       const formData = new FormData();
       formData.append('video', blob, `question_${questionId}.webm`);
       formData.append('interviewId', id);
+
       formData.append('questionId', questionId);
+
 
       const res = await fetch('/api/video/upload', {
         method: 'POST',
