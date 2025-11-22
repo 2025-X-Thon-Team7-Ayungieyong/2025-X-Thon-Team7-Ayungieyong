@@ -7,6 +7,7 @@ import InterviewRecord from './components/Interview/InterviewRecord';
 import InterviewSummary from './components/Interview/InterviewSummary';
 import NavbarLight from './components/Main-Auth-Navbar/Navbar_light';
 import NavbarDark from './components/Main-Auth-Navbar/Navbar_dark';
+import InterviewQuestion from './components/Interview/InterviewQuestion';
 
 import './App.css';
 
@@ -20,6 +21,7 @@ function Layout({ children }) {
     /^\/login$/, // 로그인
     /^\/signup$/, // 회원가입
     /^\/interview\/\d+\/webcam$/, // 인터뷰 웹캠
+    /^\/interview\/\d+\/question\/\d+$/,
   ];
 
   // 🔵 Light Navbar 적용 페이지
@@ -58,6 +60,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/interview/:id/webcam" element={<InterviewRecord />} />
           <Route path="/interview/:id/summary" element={<InterviewSummary />} />
+          <Route path="/interview/:id/question/:qid" element={<InterviewQuestion />} />
         </Routes>
       </Layout>
     </BrowserRouter>
