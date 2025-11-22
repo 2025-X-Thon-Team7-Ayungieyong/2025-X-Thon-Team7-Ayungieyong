@@ -2,12 +2,12 @@ const db = require("../config/database");
 
 class InterviewModel {
   // 면접 생성
-  async create({ userId, title, jobCategory }) {
+  async create({ userId, title, company, jobCategory }) {
     const query = `
-      INSERT INTO interviews (user_id, title, job_category, status)
-      VALUES (?, ?, ?, 'pending')
+      INSERT INTO interviews (user_id, title, company, job_category, status)
+      VALUES (?, ?, ?, ?, 'pending')
     `;
-    const result = await db.run(query, [userId, title, jobCategory]);
+    const result = await db.run(query, [userId, title, company, jobCategory]);
     return result.id;
   }
 
