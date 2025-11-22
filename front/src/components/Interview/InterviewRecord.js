@@ -97,6 +97,29 @@ function InterviewRecord() {
     }
   };
 
+  // 영상 업로드 함수
+  const uploadVideoToServer = async (blob, questionId) => {
+    try {
+      const formData = new FormData();
+      formData.append('video', blob, `question_${questionId}.webm`);
+      formData.append('interviewId', id);
+
+      formData.append('questionId', questionId);
+
+
+      const res = await fetch('/api/video/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error('업로드 실패');
+
+      console.log('업로드 성공');
+    } catch (err) {
+      console.error('업로드 에러:', err);
+    }
+  };
+
   // ffmpeg 인스턴스 준비
   // const ffmpeg = createFFmpeg({
   //   log: true,
@@ -133,15 +156,31 @@ function InterviewRecord() {
       if (e.data.size > 0) chunksRef.current.push(e.data);
     };
 
-    recorder.onstop = () => {
+    recorder.onstop = async () => {
       const blob = new Blob(chunksRef.current, { type: 'video/webm' });
       console.log('Saved webm size:', blob.size);
+
+      // 서버 업로드
+      await uploadVideoToServer(blob, questionIndex + 1);
 
       // webm → mp4 저장 형식 변환
       // const mp4Blob = await convertToMP4(webmBlob);
 
       // 안정적인 다운로드 트리거 방식
 
+      // const url = URL.createObjectURL(blob);
+      // const a = document.createElement('a');
+      // a.style.display = 'none';
+      // a.href = url;
+      // a.download = `interview_${questionIndex + 1}.webm`; // 파일명
+
+      // document.body.appendChild(a);
+      // a.click();
+      // document.body.removeChild(a);
+
+      // setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      // 다음 질문으로 이동
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
