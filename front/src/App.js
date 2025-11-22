@@ -21,13 +21,13 @@ function Layout({ children }) {
     /^\/login$/, // 로그인
     /^\/signup$/, // 회원가입
     /^\/interview\/\d+\/webcam$/, // 인터뷰 웹캠
-    /^\/interview\/\d+\/question\/\d+$/,
   ];
 
   // 🔵 Light Navbar 적용 페이지
   const lightPaths = [
     /^\/home$/, // 홈(팝업)
     /^\/interview\/\d+\/summary$/, // 인터뷰 총평
+    /^\/interview\/\d+\/question\/\d+$/,
   ];
 
   let NavbarComponent = null;
