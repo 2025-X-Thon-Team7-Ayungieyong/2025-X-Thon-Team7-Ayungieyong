@@ -1,0 +1,16 @@
+  방법 1: SSH 포트 포워딩 (권장)                                                                                                                                                                                  
+                                                                                                                                                                                                                  
+  로컬 컴퓨터에서:                                                                                                                                                                                                
+  ssh -L 2024:localhost:2024 atwoddl@210.94.189.89 -p 3165                                                                                                                                                                    
+  그 다음 브라우저:                                                                                                                                                                                               
+  https://smith.langchain.com/studio/?baseUrl=http://localhost:2024  
+
+
+
+/app/uploads/introduce.pdf
+/app/uploads/portfolio.pdf
+
+["/app/uploads/interview_1.mp4","/app/uploads/interview_2.mp4","/app/uploads/interview_3.mp4"]
+
+["/app/uploads/interview_1.wav", "/app/uploads/interview_2.wav", "/app/uploads/interview_3.wav"]
+

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>면접 & 포트폴리오 통합 리포트 대시보드</title>
+  <style>
+    :root {
+      --bg: #F5F5F5;
+      --panel: #FFFFFF;
+      --highlight-bg: #0A193D;
+      --point-text: #0A091A;
+      --muted-text: #555555;
+      --border-soft: #E0E0E0;
+      --accent-soft: rgba(10,25,61,0.06);
+      --radius-card: 14px;
+      --shadow-soft: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--point-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Pretendard", system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    body {
+      padding: 32px 16px 48px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 880px;
+    }
+
+    .header {
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted-text);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--point-text);
+      border: 1px solid rgba(10,9,26,0.06);
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 18px 16px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(0,0,0,0.02);
+    }
+
+    details {
+      border-radius: 10px;
+      overflow: hidden;
+      background: #FAFAFA;
+      border: 1px solid var(--border-soft);
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .summary-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .summary-desc {
+      font-size: 12px;
+      color: var(--muted-text);
+    }
+
+    .summary-icon {
+      font-size: 16px;
+      color: var(--highlight-bg);
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    details[open] .summary-icon {
+      transform: rotate(90deg);
+      transition: transform 0.15s ease-out;
+    }
+
+    .details-body {
+      padding: 12px 14px 14px;
+      border-top: 1px solid var(--border-soft);
+      background: #FAFAFA;
+      font-size: 13px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .pill-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(10,25,61,0.18);
+      background: #FFFFFF;
+      color: var(--highlight-bg);
+      font-size: 11px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .pill-link span {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pill-link:hover {
+      background: var(--highlight-bg);
+      color: #FFFFFF;
+    }
+
+    .pill-link-icon {
+      font-size: 12px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted-text);
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(10,25,61,0.12);
+      background: #FFFFFF;
+      color: var(--point-text);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #FF4B4B;
+    }
+
+    .badge-dot.ok {
+      background: #1BA97F;
+    }
+
+    .badge-dot.mid {
+      background: #FFB020;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin: 4px 0 0;
+    }
+
+    li {
+      margin-bottom: 2px;
+    }
+
+    .highlight-block {
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--highlight-bg);
+      color: #FFFFFF;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .highlight-block strong {
+      color: #FFFFFF;
+    }
+
+    .two-col-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      color: var(--highlight-bg);
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .quick-item {
+      font-size: 13px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: #FFFFFF;
+      border: 1px dashed rgba(10,25,61,0.16);
+    }
+
+    .quick-item strong {
+      font-weight: 600;
+    }
+
+    .score-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .score-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #FFFFFF;
+      border: 1px solid rgba(10,25,61,0.12);
+    }
+
+    .score-pill.negative {
+      color: #B3261E;
+      border-color: rgba(179,38,30,0.3);
+    }
+
+    .score-pill.positive {
+      color: #1BA97F;
+      border-color: rgba(27,169,127,0.3);
+    }
+
+    .section-spacer {
+      height: 4px;
+    }
+
+    @media (min-width: 720px) {
+      .card {
+        padding: 20px 20px 18px;
+      }
+      summary {
+        padding: 13px 16px;
+      }
+      .details-body {
+        padding: 12px 16px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="title">면접 &amp; 포트폴리오 통합 대시보드</div>
+      <div class="subtitle">Debate Report와 Portfolio/Development Report를 기반으로 한 단일 페이지 요약</div>
+      <div class="tag-row">
+        <span class="tag">React · React Native</span>
+        <span class="tag">면접 피드백</span>
+        <span class="tag">포트폴리오 개선</span>
+        <span class="tag">구조화 답변(STAR/SPAR)</span>
+      </div>
+    </header>
+
+    <!-- 1. Debate 최종 요약 -->
+    <section class="card">
+      <div class="section-label">Section 01</div>
+      <details open>
+        <summary>
+          <div class="summary-left">
+            <div class="summary-title">Debate Report · 면접 최종 요약</div>
+            <div class="summary-desc">강점·리스크·개선 방향을 5문장 내외로 압축</div>
+          </div>
+          <div class="summary-icon">▶</div>
+        </summary>
+        <div class="details-body">
+          <p>React SPA 마이그레이션, 성능 개선, 웹·모바일 경험 등 핵심 기술 스택은 문서·답변 전반에 일관되게 드러나 실무 기본 역량과 진정성은 인정됩니다. 반면, “가장 어려웠던 문제” 등 핵심 질문에 대해 구체 사례와 문제–접근–해결–성과 구조가 거의 없어 답변의 논리성과 설득력이 크게 떨어집니다. 특히 욕설·비속어 사용과 높은 부정 정서(anger/disgust) 비율은 프로페셔널리즘과 매너 측면에서 치명적인 탈락 요인으로 평가됩니다. 자기소개서의 협업·커뮤니케이션 서술과 실제 답변 태도 간 괴리도 커 인성·커뮤니케이션 신뢰도가 낮게 책정되었습니다. 전반적으로 구조화된 답변 연습, 언어·표정 매너 교정, 문장력·용어 정확도 개선이 선행되어야 하며, 현재 종합 채용 권고는 “비추천(38/100점)”입니다.</p>
+
+          <div class="highlight-block">
+            <strong>핵심 인사이트</strong><br />
+            기술 경험은 비교적 탄탄하지만, “말하는 방식(구조·태도·언어)”이 치명적 약점으로 작동하고 있어, 면접 전 전면적인 커뮤니케이션 리빌딩이 필요합니다.
+          </div>
+
+          <div class="section-spacer"></div>
+          <div class="section-label">원문 리포트</div>
+          <div class="pill-row">
+            <a class="pill-link" href="#" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>Debate Report (면접 종합 평가)</span>
+            </a>
+          </div>
+
+          <div class="score-row">
+            <span class="score-pill negative">최종 권고: 비추천</span>
+            <span class="score-pill">종합 점수: 38 / 100</span>
+            <span class="score-pill">주요 리스크: 언어·태도, 구조화 부족</span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 2. 포트폴리오/답변 통합 요약 -->
+    <section class="card">
+      <div class="section-label">Section 02</div>
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="summary-title">포트폴리오 &amp; 답변 통합 요약</div>
+            <div class="summary-desc">문서·포트폴리오·답변을 한 번에 보는 성장 지도</div>
+          </div>
+          <div class="summary-icon">▶</div>
+        </summary>
+        <div class="details-body">
+          <p>자기소개서와 포트폴리오는 학부 → 웹 FE → 모바일 RN → 프리랜서/사이드 프로젝트로 이어지는 커리어 흐름이 자연스럽고, LCP 개선·이탈률 감소·코드 중복 감소 등 수치 기반 성과가 잘 정리되어 있습니다. 협업·커뮤니케이션, 주간 데모, 제품 관점 등은 문서 전반에서 일관되게 드러나 강점으로 작용하지만, 지원 회사/직무에 맞춘 메시지가 부족해 “어디에나 복붙 가능한” 인상을 줍니다. 포트폴리오 프로젝트는 문제–행동–결과 구조와 본인 기여도, 기술 선택 이유를 조금만 보강하면 시니어 면접관에게도 설득력 있는 스토리텔링이 가능합니다. 답변에서는 구조화·요약 능력, 도메인/비즈니스 관점 언급이 부족해 문서에서 보여준 강점이 말하기 단계에서 충분히 전달되지 못하고 있습니다. 전반적으로 “문제 해결형 FE 개발자”라는 정체성은 좋지만, 이를 짧고 선명하게 요약해 회사 맥락과 연결하는 작업이 필요합니다.</p>
+
+          <div class="two-col-inline">
+            <span class="chip">강점: 수치 기반 성과</span>
+            <span class="chip">강점: 웹·모바일 풀 스택 경험</span>
+            <span class="chip">보완: 회사 맞춤 메시지</span>
+            <span class="chip">보완: 말하기 구조화</span>
+          </div>
+
+          <div class="section-spacer"></div>
+          <div class="section-label">원문 리포트</div>
+          <div class="pill-row">
+            <a class="pill-link" href="#" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>Portfolio / Development Report</span>
+            </a>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 3. 면접 개선 포인트 요약 -->
+    <section class="card">
+      <div class="section-label">Section 03</div>
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="summary-title">면접 커뮤니케이션 개선 포인트</div>
+            <div class="summary-desc">STAR/SPAR, 매너, 표정, 문장력 핵심만 정리</div>
+          </div>
+          <div class="summary-icon">▶</div>
+        </summary>
+        <div class="details-body">
+          <ul>
+            <li><strong>구조화된 답변</strong>: 모든 경험을 “상황–문제–행동–결과(STAR/SPAR)”로 말하는 연습이 최우선 과제입니다.</li>
+            <li><strong>언어·매너</strong>: 욕설·비속어는 어떤 상황에서도 금지하고, 질문 의도를 존중하는 태도를 모의 면접을 통해 체화해야 합니다.</li>
+            <li><strong>표정·비언어</strong>: 영상 촬영으로 기본 표정을 점검하고, 답변 시작·마무리 시 가벼운 미소와 고개 끄덕임을 의도적으로 넣어 부정 정서를 완화합니다.</li>
+            <li><strong>사례 중심 설명</strong>: React 마이그레이션, RN 로그인/푸시, 성능 개선 등 각 주제별로 “실제 한 장면”을 화면·코드·협업 관점에서 정리해 둡니다.</li>
+            <li><strong>문장력·용어 정확도</strong>: 답변 전 키워드 메모, 답변 녹음·필사를 통해 오타·비문·비전문 용어를 줄이고, 기술 용어를 정확히 사용합니다.</li>
+            <li><strong>핵심 메시지 요약</strong>: 각 경험에서 “무엇을 배웠는지”를 한 문장으로 정리하는 습관을 들여, 결론을 먼저 말하는 연습을 합니다.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- 4. 추천 링크 모음 -->
+    <section class="card">
+      <div class="section-label">Section 04</div>
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="summary-title">추천 링크 · 프로그램 · 리소스</div>
+            <div class="summary-desc">보고서에서 언급된 URL만 추려 pill 형태로 정리</div>
+          </div>
+          <div class="summary-icon">▶</div>
+        </summary>
+        <div class="details-body">
+          <p>아래 링크들은 실무 역량 강화, 커뮤니케이션 개선, 커리어 확장에 직접적으로 도움이 될 수 있는 프로그램·플랫폼입니다.</p>
+
+          <div class="pill-row">
+            <a class="pill-link" href="https://boostcamp.connect.or.kr" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>네이버 부스트캠프 웹·모바일</span>
+            </a>
+            <a class="pill-link" href="https://woowacourse.github.io" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>우아한테크코스 프론트엔드</span>
+            </a>
+            <a class="pill-link" href="https://techtit.tekit.kr" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>테킷 프론트엔드 스쿨</span>
+            </a>
+            <a class="pill-link" href="https://www.inflearn.com" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>인프런 React/RN 심화</span>
+            </a>
+            <a class="pill-link" href="https://fastcampus.co.kr" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>패스트캠퍼스 프론트엔드 실무</span>
+            </a>
+            <a class="pill-link" href="https://gdg.community.dev" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>GDG Seoul · 웹/모바일 밋업</span>
+            </a>
+            <a class="pill-link" href="https://d2.naver.com" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>네이버 D2 테크 세미나</span>
+            </a>
+            <a class="pill-link" href="https://tech.kakao.com" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>카카오 테크 밋업</span>
+            </a>
+            <a class="pill-link" href="https://toss.tech" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>토스 테크 세미나</span>
+            </a>
+            <a class="pill-link" href="https://www.oss.kr" target="_blank" rel="noreferrer">
+              <span class="pill-link-icon">↗</span>
+              <span>오픈소스 컨트리뷰톤 / OSS</span>
+            </a>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 5. 빠른 액션 플랜 -->
+    <section class="card">
+      <div class="section-label">Section 05</div>
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="summary-title">빠른 액션 플랜 (6–8개)</div>
+            <div class="summary-desc">다음 4주 안에 실행할 수 있는 구체 행동 목록</div>
+          </div>
+          <div class="summary-icon">▶</div>
+        </summary>
+        <div class="details-body">
+          <div class="quick-grid">
+            <div class="quick-item">
+              <strong>1) STAR/SPAR 답변 템플릿 작성</strong><br />
+              React 마이그레이션, RN 로그인/푸시, 성능 개선, 협업 사례 등 핵심 5개 경험을 STAR/SPAR 구조로 5줄 이내로 정리합니다.
+            </div>
+            <div class="quick-item">
+              <strong>2) 욕설·비속어 완전 차단 훈련</strong><br />
+              모의 면접 10문항을 녹화하며, 감정이 올라가는 질문에서도 욕설·비속어 없이 답변하는 연습을 반복합니다.
+            </div>
+            <div class="quick-item">
+              <strong>3) 자기소개서 “회사 맞춤” 문단 추가</strong><br />
+              지원하려는 서비스 유형(예: 구독, 커머스, 핀테크)에 맞춰 성과 사례 1개를 연결하는 3~4문장을 템플릿으로 만들어 둡니다.
+            </div>
+            <div class="quick-item">
+              <strong>4) 포트폴리오 프로젝트 구조 재정리</strong><br />
+              각 주요 프로젝트에 “문제–행동–결과 + 내 기여도(%) + 기술 선택 이유”를 짧은 블록으로 추가합니다.
+            </div>
+            <div class="quick-item">
+              <strong>5) GitHub README 강화</strong><br />
+              Habitly/To-Do/랜딩 페이지 등 2~3개 리포지토리에 소개, 스택, 주요 기능, 스크린샷, 배운 점 섹션을 추가합니다.
+            </div>
+            <div class="quick-item">
+              <strong>6) 성능 개선 전·후 지표 시각화</strong><br />
+              Lighthouse 리포트 캡처와 LCP/이탈률 전·후 그래프를 만들어 포트폴리오와 자기소개서에 링크 또는 이미지로 첨부합니다.
+            </div>
+            <div class="quick-item">
+              <strong>7) 모의 면접 스터디 참여</strong><br />
+              주 1회 온라인/오프라인 스터디를 찾아, 기술·경험 질문에 대한 구조화 답변과 피드백을 정기적으로 받습니다.
+            </div>
+            <div class="quick-item">
+              <strong>8) 기술 블로그 “Top 3” 정리</strong><br />
+              React SPA 마이그레이션, RN 안정화, FE 성능 체크리스트 등 2~3편을 선정해 포트폴리오 상단에 링크 섹션을 만듭니다.
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 6. 리스크 & 강점 한눈에 보기 -->
+    <section class="card">
+      <div class="section-label">Section 06</div>
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="summary-title">강점 vs 리스크 스냅샷</div>
+            <div class="summary-desc">면접관이 실제로 보는 포인트를 한 줄씩 정리</div>
+          </div>
+          <div class="summary-icon">▶</div>
+        </summary>
+        <div class="details-body">
+          <div class="two-col-inline">
+            <span class="badge">
+              <span class="badge-dot ok"></span>
+              기술 경험 일관성 (React/RN, 성능 개선)
+            </span>
+            <span class="badge">
+              <span class="badge-dot ok"></span>
+              수치 기반 성과 (LCP, 이탈률, 코드 중복)
+            </span>
+            <span class="badge">
+              <span class="badge-dot mid"></span>
+              협업·제품 관점은 문서상 강점
+            </span>
+            <span class="badge">
+              <span class="badge-dot"></span>
+              면접 언어·태도 (욕설, 비속어)
+            </span>
+            <span class="badge">
+              <span class="badge-dot"></span>
+              구조화 답변 및 요약 능력
+            </span>
+            <span class="badge">
+              <span class="badge-dot"></span>
+              표정·비언어 커뮤니케이션 (부정 정서 비율)
+            </span>
+          </div>
+        </div>
+      </details>
+    </section>
+  </main>
+</body>
+</html>

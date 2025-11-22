@@ -1,0 +1,15 @@
+Metric,Value
+Positive Score (100 scale),39.33
+Negative Score (100 scale),60.67
+Positive Sum (raw),0.3933
+Negative Sum (raw),0.6067
+Total,1.0000
+
+Emotion,Average Value,Type
+happiness,0.2422,Positive
+surprise,0.0382,Positive
+neutral,0.1129,Positive
+anger,0.1551,Negative
+disgust,0.3377,Negative
+fear,0.0057,Negative
+sadness,0.1082,Negative

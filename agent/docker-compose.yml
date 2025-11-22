@@ -1,0 +1,143 @@
+services:
+  pdf_reader:
+    build:
+      context: ./PDF_Reader
+      dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID}
+        USER_GID: ${GID}
+        USERNAME: ${USER}
+    image: hackathon-pdf-reader:latest-${USER}
+    container_name: hackathon_pdf_reader
+    user: "${UID}:${GID}"
+    volumes:
+      - /data/project/atwoddl/Hackathon:/app
+    ports:
+      - "8001:8000"
+    networks:
+      - hackathon_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  question_generator:
+    build:
+      context: ./Question_generator
+      dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID}
+        USER_GID: ${GID}
+        USERNAME: ${USER}
+    image: hackathon-question-generator:latest-${USER}
+    container_name: hackathon_question_gen
+    user: "${UID}:${GID}"
+    volumes:
+      - /data/project/atwoddl/Hackathon:/app
+    ports:
+      - "8002:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - hackathon_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  face_analysis:
+    build:
+      context: ./Face_Analysis
+      dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID}
+        USER_GID: ${GID}
+        USERNAME: ${USER}
+    image: hackathon-face-analysis:latest-${USER}
+    container_name: hackathon_face_analysis
+    user: "${UID}:${GID}"
+    volumes:
+      - /data/project/atwoddl/Hackathon:/app
+    ports:
+      - "8003:8000"
+    networks:
+      - hackathon_network
+    # Uncomment for GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  voice_analysis:
+    build:
+      context: ./Voice_Analysis
+      dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID}
+        USER_GID: ${GID}
+        USERNAME: ${USER}
+    image: hackathon-voice-analysis:latest-${USER}
+    container_name: hackathon_voice_analysis
+    user: "${UID}:${GID}"
+    volumes:
+      - /data/project/atwoddl/Hackathon:/app
+    ports:
+      - "8004:8000"
+    networks:
+      - hackathon_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID}
+        USER_GID: ${GID}
+        USERNAME: ${USER}
+    image: hackathon-admin:latest-${USER}
+    container_name: hackathon_admin
+    user: "${UID}:${GID}"
+    volumes:
+      - /data/project/atwoddl/Hackathon:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
+      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY:-}
+      - LANGCHAIN_PROJECT=${LANGCHAIN_PROJECT:-hackathon}
+      - PDF_READER_URL=http://pdf_reader:8000
+      - QUESTION_GEN_URL=http://question_generator:8000
+      - FACE_ANALYSIS_URL=http://face_analysis:8000
+      - VOICE_ANALYSIS_URL=http://voice_analysis:8000
+    networks:
+      - hackathon_network
+    depends_on:
+      - pdf_reader
+      - question_generator
+      - face_analysis
+      - voice_analysis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  hackathon_network:
+    driver: bridge
