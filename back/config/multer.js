@@ -25,10 +25,15 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname);
     const name = path.basename(file.originalname, ext);
-    cb(null, `${name}-${uniqueSuffix}${ext}`);
+
+    // 질문 ID가 넘어올 때는 question_<id>.webm 형식으로, 없으면 원본 이름으로 저장
+    const base = req.body?.questionId
+      ? `question_${req.body.questionId}`
+      : name;
+
+    cb(null, `${base}${ext}`); // <-- uniqueSuffix 제거
   },
 });
 
