@@ -1,0 +1,321 @@
+● 알겠습니다! 상세하게 설명드리겠습니다.
+
+  📋 전체 실행 가이드
+
+  1단계: 환경 준비
+
+  cd /data/project/atwoddl/Hackathon
+
+  # uploads 폴더에 PDF 파일 넣기
+  cp /path/to/your/introduce.pdf uploads/introduce.pdf
+
+  # 또는 테스트용으로 기존 PDF 복사
+  cp PDF_Reader/test.pdf uploads/introduce.pdf
+
+  # 파일 확인
+  ls -la uploads/
+
+  2단계: 서비스 시작 (Docker Compose 사용)
+
+  # .env 파일이 있는지 확인 (이미 생성되어 있음)
+  cat .env
+
+  # Docker Compose로 모든 서비스 시작
+  docker compose up --build
+
+  # 또는 백그라운드로 실행
+  docker compose up -d --build
+
+  빌드 시간:
+  - PDF_Reader, Question_generator, Voice_Analysis: 1-2분
+  - Face_Analysis: 5-10분 (py-feat 설치 때문에 오래 걸림)
+  - Admin: 2-3분
+
+  3단계: 서비스 확인
+
+  새 터미널을 열고:
+
+  # 모든 서비스 헬스체크
+  echo "=== PDF Reader ==="
+  curl http://localhost:8001/health
+
+  echo "=== Question Generator ==="
+  curl http://localhost:8002/health
+
+  echo "=== Face Analysis ==="
+  curl http://localhost:8003/health
+
+  echo "=== Voice Analysis ==="
+  curl http://localhost:8004/health
+
+  echo "=== Admin ==="
+  curl http://localhost:8000/health
+
+  모두 {"status":"ok"}를 반환하면 준비 완료! ✅
+
+  4단계: 워크플로우 시작
+
+  # introduce.pdf로 워크플로우 시작
+  curl -X POST http://localhost:8000/start \
+    -H "Content-Type: application/json" \
+    -d '{"pdf_path": "/app/uploads/introduce.pdf"}' \
+    | jq
+
+  # 응답에서 session_id 복사해두기
+  # 예: "session_id": "550e8400-e29b-41d4-a716-446655440000"
+
+  응답 예시:
+  {
+    "session_id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "created",
+    "message": "Workflow started. Use /status/{session_id} to check progress."
+  }
+
+  5단계: LangSmith에서 실시간 확인 🎉
+
+  1. 브라우저 열기: https://smith.langchain.com/
+  2. 로그인 (이미 되어있을 것)
+  3. Projects 클릭 → hackathon-interview-analysis 선택
+  4. 실시간 실행 보기:
+    - 가장 최근 실행이 맨 위에 표시됨
+    - 클릭하면 그래프 시각화 나타남
+  5. 보이는 것:
+  ┌─────────────┐
+  │ pdf_extract │ ✅ 실행 완료 (3.2초)
+  └──────┬──────┘
+         ↓
+  ┌──────────────────┐
+  │question_generate │ ✅ 실행 완료 (5.1초)
+  └──────┬───────────┘
+         ↓
+  ┌──────────────────┐
+  │wait_for_upload   │ ✅ 실행 완료 (0.1초)
+  └──────┬───────────┘
+         ↓
+  ┌──────────────────┐
+  │ face_analysis    │ 🔴 INTERRUPTED (대기 중)
+  └──────────────────┘
+  6. 각 노드 클릭하면 볼 수 있는 것:
+    - Input: 노드로 들어온 데이터
+    - Output: 노드에서 나간 데이터
+    - Execution Time: 실행 시간
+    - Logs: 에러 메시지 (있다면)
+
+  6단계: 진행 상황 확인 (API)
+
+  # session_id를 여기에 넣기
+  SESSION_ID="550e8400-e29b-41d4-a716-446655440000"
+
+  curl http://localhost:8000/status/$SESSION_ID | jq
+
+  응답 예시:
+  {
+    "session_id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "waiting_for_upload",
+    "pdf_path": "/app/uploads/introduce.pdf",
+    "questions": [
+      {
+        "question": "귀하의 주요 기술 스택과 경험은 무엇인가요?",
+        "intent": "기술적 역량 파악"
+      },
+      {
+        "question": "가장 어려웠던 프로젝트 경험을 말씀해주세요.",
+        "intent": "문제 해결 능력 평가"
+      },
+      {
+        "question": "팀 프로젝트에서 어떤 역할을 주로 맡으셨나요?",
+        "intent": "협업 능력 확인"
+      }
+    ],
+    "video_path": null,
+    "audio_path": null,
+    "error_message": null
+  }
+
+  이 시점에서 워크플로우는 face_analysis 직전에서 멈춰있습니다! 🛑
+
+  7단계: 비디오/오디오 업로드
+
+  # 테스트용 비디오 파일 업로드
+  curl -X POST http://localhost:8000/upload/$SESSION_ID \
+    -F "video=@Face_Analysis/face_test.mp4" \
+    | jq
+
+  # 또는 둘 다 업로드
+  curl -X POST http://localhost:8000/upload/$SESSION_ID \
+    -F "video=@Face_Analysis/face_test.mp4" \
+    -F "audio=@/path/to/audio.wav" \
+    | jq
+
+  업로드 즉시:
+  - 백엔드에서 continue_workflow() 자동 호출
+  - LangSmith에서 워크플로우 재개되는 것을 실시간으로 볼 수 있음!
+
+  8단계: LangSmith에서 재개된 워크플로우 확인
+
+  LangSmith 화면:
+  ┌──────────────────┐
+  │ face_analysis    │ 🟢 실행 중... (30초 소요)
+  └──────┬───────────┘
+         ↓
+  ┌──────────────────┐
+  │ voice_analysis   │ ⏳ 대기 중
+  └──────┬───────────┘
+         ↓
+  ┌──────────────────┐
+  │    complete      │ ⏳ 대기 중
+  └──────────────────┘
+
+  각 노드가 순차적으로 실행되는 것을 실시간으로 볼 수 있습니다!
+
+  9단계: 최종 결과 확인
+
+  # 완료될 때까지 상태 확인 (몇 초마다 반복)
+  watch -n 2 "curl -s http://localhost:8000/status/$SESSION_ID | jq '.status'"
+
+  # 또는 한 번만 확인
+  curl http://localhost:8000/status/$SESSION_ID | jq
+
+  최종 응답:
+  {
+    "session_id": "550e8400-...",
+    "status": "completed",
+    "pdf_path": "/app/uploads/introduce.pdf",
+    "video_path": "/app/uploads/550e8400-..._video.mp4",
+    "audio_path": null,
+    "questions": [...],
+    "error_message": null
+  }
+
+  10단계: LangSmith에서 전체 실행 리뷰
+
+  LangSmith에서 완료된 워크플로우 클릭:
+
+  1. Timeline View: 각 노드 실행 시간 시각화
+  2. Tree View: 계층 구조로 보기
+  3. 각 노드 상세 정보:
+    - pdf_extract: 추출된 텍스트 확인
+    - question_generate: OpenAI 응답 확인
+    - face_analysis: 감정 분석 결과
+    - voice_analysis: 음성 분석 결과
+
+  ---
+  🎯 전체 과정 요약
+
+  # 1. 서비스 시작
+  docker-compose up -d --build
+
+  # 2. 헬스체크
+  curl http://localhost:8000/health
+
+  # 3. 워크플로우 시작
+  curl -X POST http://localhost:8000/start \
+    -H "Content-Type: application/json" \
+    -d '{"pdf_path": "/app/uploads/introduce.pdf"}'
+
+  # 4. LangSmith에서 확인
+  # → https://smith.langchain.com/ 접속
+
+  # 5. 파일 업로드
+  curl -X POST http://localhost:8000/upload/{SESSION_ID} \
+    -F "video=@Face_Analysis/face_test.mp4"
+
+  # 6. LangSmith에서 재개되는 것 확인
+  # → 실시간으로 face_analysis → voice_analysis 실행
+
+  # 7. 결과 확인
+  curl http://localhost:8000/status/{SESSION_ID}
+
+  ---
+  📊 LangSmith에서 볼 수 있는 상세 정보
+
+  1. pdf_extract 노드
+
+  Input:
+  {
+    "session_id": "550e8400-...",
+    "pdf_path": "/app/uploads/introduce.pdf"
+  }
+
+  Output:
+  {
+    "extraction_data": {
+      "total_pages": 2,
+      "pages": [
+        {"page_number": 1, "text": "이름: 홍길동\n경력: ..."},
+        {"page_number": 2, "text": "학력: ...\n기술: ..."}
+      ]
+    }
+  }
+
+  2. question_generate 노드
+
+  Input:
+  {
+    "extraction_data": {...}
+  }
+
+  Output:
+  {
+    "questions": [
+      {"question": "...", "intent": "..."},
+      {"question": "...", "intent": "..."},
+      {"question": "...", "intent": "..."}
+    ]
+  }
+
+  3. Interrupt 지점
+
+  Status: INTERRUPTED
+  Message: "Waiting for human input before 'face_analysis'"
+  Next Node: face_analysis
+
+  4. face_analysis 노드 (재개 후)
+
+  Input:
+  {
+    "session_id": "550e8400-...",
+    "video_path": "/app/uploads/550e8400-..._video.mp4"
+  }
+
+  Output:
+  {
+    "face_result": {
+      "summary": {
+        "average_emotions": {
+          "emotion_happiness": 0.65,
+          "emotion_neutral": 0.25,
+          ...
+        }
+      }
+    }
+  }
+
+  ---
+  🔧 트러블슈팅
+
+  서비스가 안 뜨면
+
+  # 로그 확인
+  docker-compose logs admin
+  docker-compose logs pdf_reader
+
+  # 특정 서비스 재시작
+  docker-compose restart admin
+
+  LangSmith에 안 보이면
+
+  # 환경변수 확인
+  docker-compose exec admin env | grep LANGCHAIN
+
+  # 출력되어야 할 것:
+  # LANGCHAIN_TRACING_V2=true
+  # LANGCHAIN_API_KEY=lsv2_pt_...
+
+  PDF 읽기 실패 시
+
+  # 파일 경로 확인
+  docker-compose exec admin ls -la /app/uploads/
+
+  # 권한 확인
+  docker-compose exec admin stat /app/uploads/introduce.pd
