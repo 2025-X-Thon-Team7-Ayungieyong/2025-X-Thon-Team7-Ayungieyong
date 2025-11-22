@@ -4,6 +4,8 @@ import loadingGif from '../../assets/loading.gif';
 import './PopUp.css';
 
 export default function PopUp({ onClose }) {
+  const [interviewId, setInterviewId] = useState(null);
+
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
@@ -22,6 +24,81 @@ export default function PopUp({ onClose }) {
   const [cameraOk, setCameraOk] = useState(false);
   const [micOk, setMicOk] = useState(false);
   const [mediaStream, setMediaStream] = useState(null);
+
+  const startInterviewProcess = async () => {
+    try {
+      console.log('=== 인터뷰 생성 & 질문 생성 프로세스 시작 ===');
+
+      // 1) 인터뷰 생성
+      const createRes = await fetch('/interview/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          company,
+          jobCategory: position,
+          questions: [],
+        }),
+      });
+      const createData = await createRes.json();
+
+      if (!createData.success) throw new Error('인터뷰 생성 실패');
+      const newInterviewId = createData.data.id;
+      console.log('인터뷰 ID:', newInterviewId);
+
+      // 2) introduce 업로드
+      const form1 = new FormData();
+      form1.append('introduce', uploadFile.resumeBackend);
+
+      const resIntroduce = await fetch('/document/introduce/upload', {
+        method: 'POST',
+        body: form1,
+      });
+      const introduceData = await resIntroduce.json();
+
+      if (!introduceData.success) throw new Error('자소서 업로드 실패');
+      const introduceId = introduceData.data.id;
+      console.log('자소서 문서 ID:', introduceId);
+
+      // 3) portfolio 업로드
+      const form2 = new FormData();
+      form2.append('portfolio', uploadFile.portfolioBackend);
+
+      const resPortfolio = await fetch('/document/portfolio/upload', {
+        method: 'POST',
+        body: form2,
+      });
+      const portfolioData = await resPortfolio.json();
+
+      if (!portfolioData.success) throw new Error('포트폴리오 업로드 실패');
+      const portfolioId = portfolioData.data.id;
+      console.log('포트폴리오 문서 ID:', portfolioId);
+
+      // 4) 질문 생성
+      const qRes = await fetch('/question/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          interviewId: newInterviewId,
+          documentIds: [introduceId, portfolioId],
+          jobCategory: position,
+          questionCount: Number(questionCount),
+        }),
+      });
+      const qData = await qRes.json();
+
+      if (!qData.success || !qData.data.questions?.length) throw new Error('질문 생성 실패');
+
+      console.log('생성된 질문 개수:', qData.data.questions.length);
+
+      // 5) 웹캠 페이지 이동
+      navigate(`/interview/${newInterviewId}/webcam`);
+    } catch (err) {
+      console.error('오류 발생:', err.message);
+      alert('문제가 발생했습니다: ' + err.message);
+      setStep(4);
+    }
+  };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -356,24 +433,14 @@ export default function PopUp({ onClose }) {
 
               <button
                 className="popup-next"
-                onClick={async () => {
+                onClick={() => {
                   if (!cameraOk || !micOk) {
                     alert('카메라 또는 마이크가 연결되지 않았습니다.');
                     return;
                   }
-                  setStep(5);
 
-                  try {
-                    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-                    const interviewId = 1; // 임시 값
-
-                    navigate(`/interview/${interviewId}/webcam`);
-                  } catch (err) {
-                    console.error(err);
-                    alert('오류가 발생했습니다. 다시 시도해주세요.');
-                    setStep(4);
-                  }
+                  setStep(5); // step5로 전환
+                  startInterviewProcess(); // 전체 백엔드 작업 시작
                 }}
               >
                 시작하기
