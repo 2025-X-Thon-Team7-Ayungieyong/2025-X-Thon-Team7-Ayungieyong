@@ -5,17 +5,18 @@ const DEFAULT_USER_ID = 1;
 
 class InterviewController {
   create = asyncHandler(async (req, res) => {
-    const { title, jobCategory, questions } = req.body;
+    const { title, company, jobCategory, questions } = req.body;
 
-    if (!title || !jobCategory) {
+    if (!title || !company || !jobCategory) {
       return res.status(400).json({
         success: false,
-        message: "제목과 직군을 입력해주세요.",
+        message: "제목, 면접 볼 회사, 직군을 모두 입력해주세요.",
       });
     }
 
     const interview = await interviewService.createInterview(DEFAULT_USER_ID, {
       title,
+      company,
       jobCategory,
       questions: questions || [],
     });
