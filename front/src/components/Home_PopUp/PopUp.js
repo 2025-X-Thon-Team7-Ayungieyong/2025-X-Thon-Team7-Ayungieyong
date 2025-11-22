@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loadingGif from '../../assets/loading.gif';
+import './PopUp.css';
 
 export default function PopUp({ onClose }) {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function PopUp({ onClose }) {
   const handlePrev = () => setStep(step - 1);
 
   const [title, setTitle] = useState('');
+  const [company, setCompany] = useState('');
   const [position, setPosition] = useState('');
   const [questionCount, setQuestionCount] = useState('');
 
@@ -19,7 +21,6 @@ export default function PopUp({ onClose }) {
 
   const [cameraOk, setCameraOk] = useState(false);
   const [micOk, setMicOk] = useState(false);
-
   const [mediaStream, setMediaStream] = useState(null);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,54 +71,41 @@ export default function PopUp({ onClose }) {
   }, [mediaStream]);
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <div
-        style={{
-          background: 'white',
-          padding: '20px',
-          borderRadius: '10px',
-          width: '400px',
-          minHeight: '280px',
-        }}
-      >
+    <div className="popup-overlay">
+      <div className="popup-container">
         {/* step UI */}
         {step === 1 && (
           <div>
-            <h2>새 면접 만들기 (Step 1)</h2>
-            <p>면접에 대한 기본 정보를 입력해주세요.</p>
+            <h2 className="popup-title">새 면접 만들기</h2>
+            <p style={{ textAlign: 'center' }}>면접에 대한 기본 정보를 입력해주세요.</p>
 
             {/* 면접 제목 */}
-            <div style={{ marginBottom: '10px' }}>
-              <label>면접장 제목</label>
+            <div style={{ marginBottom: '5px' }}>
+              <label className="popup-label">면접장 제목</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="예: 삼성 SDK 면접"
-                style={{ width: '95%', padding: '6px' }}
+                placeholder="면접장 제목을 입력하세요"
+                className="popup-input"
+              />
+            </div>
+            {/* 회사명 추가됨 */}
+            <div style={{ marginBottom: '5px' }}>
+              <label className="popup-label">면접 볼 회사</label>
+              <input
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="예: 삼성전자 / 카카오 / 네이버"
+                className="popup-input"
               />
             </div>
 
             {/* 직군 */}
-            <div style={{ marginBottom: '10px' }}>
-              <label>직군</label>
-              <select
-                value={position}
-                onChange={(e) => setPosition(e.target.value)}
-                style={{ width: '100%', padding: '6px' }}
-              >
+            <div style={{ marginBottom: '5px' }}>
+              <label className="popup-label">직군</label>
+              <select value={position} onChange={(e) => setPosition(e.target.value)} className="popup-select">
                 <option value="">선택하세요</option>
                 <option value="프론트">프론트 개발자</option>
                 <option value="백엔드">백엔드 개발자</option>
@@ -129,13 +117,9 @@ export default function PopUp({ onClose }) {
             </div>
 
             {/* 질문 수 */}
-            <div style={{ marginBottom: '10px' }}>
-              <label>질문 수</label>
-              <select
-                value={questionCount}
-                onChange={(e) => setQuestionCount(e.target.value)}
-                style={{ width: '100%', padding: '6px' }}
-              >
+            <div style={{ marginBottom: '5px' }}>
+              <label className="popup-label">질문 수</label>
+              <select value={questionCount} onChange={(e) => setQuestionCount(e.target.value)} className="popup-select">
                 <option value="">선택하세요</option>
                 {Array.from({ length: 8 }, (_, i) => i + 3).map((num) => (
                   <option key={num} value={num}>
@@ -144,18 +128,21 @@ export default function PopUp({ onClose }) {
                 ))}
               </select>
             </div>
-
-            <button onClick={onClose}>취소</button>
-            <button onClick={handleNext} disabled={!title || !position || !questionCount}>
-              다음
-            </button>
+            <div className="popup-buttons-fixed">
+              <button className="popup-cancel" onClick={onClose}>
+                취소
+              </button>
+              <button className="popup-next" onClick={handleNext} disabled={!title || !position || !questionCount}>
+                다음
+              </button>
+            </div>
           </div>
         )}
 
         {step === 2 && (
           <div>
-            <h2>파일 업로드 (Step 2)</h2>
-            <p>자기소개서/포트폴리오를 업로드 해주세요.</p>
+            <h2 className="popup-title">파일 업로드</h2>
+            <p style={{ textAlign: 'center' }}>자기소개서/포트폴리오를 업로드 해주세요.</p>
 
             {/* 숨겨진 input */}
             <input
@@ -195,113 +182,78 @@ export default function PopUp({ onClose }) {
             />
 
             {/* 자기소개서 업로드 버튼 */}
-            <div
-              onClick={() => document.getElementById('resumeInput').click()}
-              style={{
-                width: '100%',
-                height: '90px',
-                border: '2px solid #444',
-                borderRadius: '8px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-                marginBottom: '10px',
-              }}
-            >
+            <div onClick={() => document.getElementById('resumeInput').click()} className="upload-box">
               {/* 파일 업로드 전에는 아이콘 + 텍스트 */}
               {!uploadFile.resume ? (
                 <>
-                  <div style={{ fontSize: '28px' }}>📁</div>
+                  <img src={require('../../assets/file.png')} alt="file icon" className="upload-icon" />
                   <div>자기소개서 업로드</div>
                 </>
               ) : (
-                <div>{uploadFile.resume.name}</div>
+                <div className="upload-text">{uploadFile.resume.name}</div>
               )}
             </div>
 
             {/* 포트폴리오 업로드 버튼 */}
-            <div
-              onClick={() => document.getElementById('portfolioInput').click()}
-              style={{
-                width: '100%',
-                height: '90px',
-                border: '2px solid #444',
-                borderRadius: '8px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-                marginBottom: '15px',
-              }}
-            >
+            <div onClick={() => document.getElementById('portfolioInput').click()} className="upload-box">
               {!uploadFile.portfolio ? (
                 <>
-                  <div style={{ fontSize: '28px' }}>📁</div>
+                  <img src={require('../../assets/file.png')} alt="file icon" className="upload-icon" />
                   <div>포트폴리오 업로드</div>
                 </>
               ) : (
-                <div>{uploadFile.portfolio.name}</div>
+                <div className="upload-text">{uploadFile.portfolio.name}</div>
               )}
             </div>
 
             {/* 이전/다음 버튼 */}
-            <button onClick={handlePrev}>이전</button>
+            <div className="popup-buttons-fixed">
+              <button className="popup-cancel" onClick={handlePrev}>
+                이전
+              </button>
 
-            <button
-              onClick={() => {
-                if (!uploadFile.portfolio || !uploadFile.resume) {
-                  alert('자기소개서와 포트폴리오를 모두 업로드해주세요.');
-                  return;
-                }
+              <button
+                className="popup-next"
+                onClick={() => {
+                  if (!uploadFile.portfolio || !uploadFile.resume) {
+                    alert('자기소개서와 포트폴리오를 모두 업로드해주세요.');
+                    return;
+                  }
 
-                // 백엔드 전송용 파일명 변경
-                const backendPortfolio = new File([uploadFile.portfolio], 'portfolio.pdf', {
-                  type: uploadFile.portfolio.type,
-                });
+                  // 백엔드 전송용 파일명 변경
+                  const backendPortfolio = new File([uploadFile.portfolio], 'portfolio.pdf', {
+                    type: uploadFile.portfolio.type,
+                  });
 
-                const backendResume = new File([uploadFile.resume], 'introduce.pdf', { type: uploadFile.resume.type });
+                  const backendResume = new File([uploadFile.resume], 'introduce.pdf', {
+                    type: uploadFile.resume.type,
+                  });
 
-                // 백엔드에서 사용할 파일을 따로 저장
-                setUploadFile({
-                  ...uploadFile,
-                  portfolioBackend: backendPortfolio,
-                  resumeBackend: backendResume,
-                });
+                  // 백엔드에서 사용할 파일을 따로 저장
+                  setUploadFile({
+                    ...uploadFile,
+                    portfolioBackend: backendPortfolio,
+                    resumeBackend: backendResume,
+                  });
 
-                handleNext();
-              }}
-            >
-              다음
-            </button>
+                  handleNext();
+                }}
+              >
+                다음
+              </button>
+            </div>
           </div>
         )}
 
         {step === 3 && (
-          <div>
-            <h2>질문 추가 (Step 3)</h2>
+          <div className="popup-step-wrapper">
+            <h2 className="popup-title">질문 추가</h2>
             <p>연습하고 싶은 면접 질문을 추가해주세요.</p>
 
             {/* 질문 input 리스트 */}
-            <div
-              style={{
-                marginBottom: '10px',
-                maxHeight: '250px',
-                overflowY: 'auto',
-                paddingRight: '5px',
-              }}
-            >
+            <div className="question-list">
               {questions.map((q, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '8px',
-                  }}
-                >
+                <div key={idx} className="question-item">
                   <input
                     type="text"
                     value={q}
@@ -310,10 +262,7 @@ export default function PopUp({ onClose }) {
                       updated[idx] = e.target.value;
                       setQuestions(updated);
                     }}
-                    style={{
-                      flex: 1,
-                      padding: '8px',
-                    }}
+                    className="question-input"
                   />
 
                   {/* 삭제 버튼 */}
@@ -323,9 +272,7 @@ export default function PopUp({ onClose }) {
                       updated.splice(idx, 1);
                       setQuestions(updated);
                     }}
-                    style={{
-                      marginLeft: '5px',
-                    }}
+                    className="question-delete"
                   >
                     X
                   </button>
@@ -342,19 +289,18 @@ export default function PopUp({ onClose }) {
                 }
                 setQuestions([...questions, '']);
               }}
-              style={{
-                width: '100%',
-                padding: '8px',
-                marginTop: '10px',
-              }}
+              className="question-add-box"
             >
               새 질문 만들기
             </button>
 
             {/* 이동 버튼 */}
-            <div style={{ marginTop: '20px' }}>
-              <button onClick={handlePrev}>이전</button>
+            <div className="popup-buttons-fixed">
+              <button className="popup-cancel" onClick={handlePrev}>
+                이전
+              </button>
               <button
+                className="popup-next"
                 onClick={() => {
                   // 질문이 1개 이상이면 빈 값 체크
                   if (questions.length > 0) {
@@ -375,115 +321,101 @@ export default function PopUp({ onClose }) {
         )}
 
         {step === 4 && (
-          <div>
-            <h2>디바이스 체크</h2>
+          <div className="step4-wrapper">
+            <h2 className="popup-title">디바이스 체크</h2>
 
             {/* 캠 미리보기 영역 */}
-            <div
-              style={{
-                width: '100%',
-                height: '220px',
-                backgroundColor: '#eee',
-                borderRadius: '10px',
-                overflow: 'hidden',
-                marginBottom: '15px',
-              }}
-            >
-              <video
-                id="previewVideo"
-                autoPlay
-                playsInline
-                muted
-                style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }}
-              />
+            <div className="device-video-box">
+              <video id="previewVideo" autoPlay playsInline muted className="device-video" />
             </div>
 
             {/* 상태 표시 */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+            <div className="device-status-row">
               {/* 카메라 상태 */}
-              <div
-                style={{
-                  flex: 1,
-                  padding: '8px',
-                  borderRadius: '8px',
-                  backgroundColor: cameraOk ? '#d4f7d4' : '#ffd4d4',
-                  color: cameraOk ? '#0a7a0a' : '#b80000',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+              <div className={`device-status ${cameraOk ? 'ok' : 'no'}`}>
                 {cameraOk ? '📷 카메라 연결됨' : '📷 카메라 연결 안됨'}
               </div>
 
               {/* 마이크 상태 */}
-              <div
-                style={{
-                  flex: 1,
-                  padding: '8px',
-                  borderRadius: '8px',
-                  backgroundColor: micOk ? '#d4f7d4' : '#ffd4d4',
-                  color: micOk ? '#0a7a0a' : '#b80000',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+              <div className={`device-status ${micOk ? 'ok' : 'no'}`}>
                 {micOk ? '🎤 마이크 연결됨' : '🎤 마이크 연결 안됨'}
               </div>
             </div>
-            <button
-              onClick={() => {
-                if (mediaStream) {
-                  mediaStream.getTracks().forEach((t) => t.stop());
-                }
-                handlePrev();
-              }}
-            >
-              이전
-            </button>
+            <div className="popup-buttons-fixed">
+              <button
+                className="popup-cancel"
+                onClick={() => {
+                  if (mediaStream) {
+                    mediaStream.getTracks().forEach((t) => t.stop());
+                  }
+                  handlePrev();
+                }}
+              >
+                이전
+              </button>
 
-            <button
-              onClick={async () => {
-                if (!cameraOk || !micOk) {
-                  alert('카메라 또는 마이크가 연결되지 않았습니다.');
-                  return;
-                }
-                setStep(5);
+              <button
+                className="popup-next"
+                onClick={async () => {
+                  if (!cameraOk || !micOk) {
+                    alert('카메라 또는 마이크가 연결되지 않았습니다.');
+                    return;
+                  }
+                  setStep(5);
 
-                try {
-                  await new Promise((resolve) => setTimeout(resolve, 1500));
+                  try {
+                    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-                  const interviewId = 1; // 임시 값
+                    const interviewId = 1; // 임시 값
 
-                  navigate(`/interview/${interviewId}/webcam`);
-                } catch (err) {
-                  console.error(err);
-                  alert('오류가 발생했습니다. 다시 시도해주세요.');
-                  setStep(4);
-                }
-              }}
-            >
-              시작하기
-            </button>
+                    navigate(`/interview/${interviewId}/webcam`);
+                  } catch (err) {
+                    console.error(err);
+                    alert('오류가 발생했습니다. 다시 시도해주세요.');
+                    setStep(4);
+                  }
+                }}
+              >
+                시작하기
+              </button>
+            </div>
           </div>
         )}
 
         {step === 5 && (
           <div
+            className="popup-step-wrapper"
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              height: '250px',
+              height: '380px',
               textAlign: 'center',
+              gap: '20px',
             }}
           >
-            <img src={loadingGif} alt="loading" width="60" />
-            <p style={{ marginTop: '10px' }}>처리 중 입니다.</p>
+            <img
+              marginTop="30px"
+              src={loadingGif}
+              alt="loading"
+              style={{
+                width: '100px',
+                height: '100px',
+                objectFit: 'contain',
+                marginBottom: '5px',
+              }}
+            />
+
+            <p
+              style={{
+                fontSize: '28px',
+                color: 'white',
+                fontWeight: 500,
+              }}
+            >
+              처리 중 입니다...
+            </p>
           </div>
         )}
       </div>

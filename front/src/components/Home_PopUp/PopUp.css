@@ -16,7 +16,7 @@
 /* 팝업 카드 */
 .popup-container {
   width: 620px;
-  height: 480px;
+  height: 510px;
   min-width: 620px;
   max-width: 620px;
   padding: 35px 40px;
@@ -50,13 +50,12 @@
 .popup-input,
 .popup-select {
   width: 100%;
-  height: 48px;
+  height: 45px;
   border-radius: 12px;
   border: none;
 
   font-size: 15px;
   background: rgba(255, 255, 255, 0.85);
-  margin-bottom: 18px;
   outline: none;
 }
 
@@ -68,15 +67,6 @@
   background-repeat: no-repeat;
   background-position: right 14px center;
 }
-
-/* 버튼 영역 */
-.popup-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 18px;
-}
-
 /* 취소 버튼 */
 .popup-cancel {
   width: 110px;
@@ -117,6 +107,7 @@
   color: white;
   box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.35);
   border: 1.6px solid rgba(255, 255, 255, 0.12);
+  padding: 15px 0;
 }
 
 /* 파일 아이콘 */
@@ -131,14 +122,6 @@
   font-size: 16px;
   font-weight: 500;
   opacity: 0.95;
-}
-
-/* 버튼 영역 */
-.popup-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 10px;
 }
 
 /* Step3 wrapper */
