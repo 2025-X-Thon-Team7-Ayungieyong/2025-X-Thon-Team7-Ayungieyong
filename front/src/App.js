@@ -28,6 +28,7 @@ function Layout({ children }) {
   const lightPaths = [
     /^\/home$/, // 홈(팝업)
     /^\/interview\/\d+\/summary$/, // 인터뷰 총평
+    /^\/interview\/\d+\/question\/\d+$/,
   ];
 
   let NavbarComponent = null;
