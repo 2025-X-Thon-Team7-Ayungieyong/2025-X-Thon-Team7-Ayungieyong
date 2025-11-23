@@ -49,6 +49,7 @@
   font-size: 19px;
   font-weight: 700;
   background: white;
+  line-height: 1.5;
 }
 
 /* 영상 + 피드백 */
@@ -101,7 +102,7 @@
   list-style: disc;
   padding-left: 18px;
   font-size: 17px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: #333;
 }
 
