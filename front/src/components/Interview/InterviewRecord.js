@@ -9,40 +9,24 @@ function InterviewRecord() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // const speak = (text) => {
-  //   const utter = new SpeechSynthesisUtterance(text);
-  //   utter.lang = 'ko-KR';
-  //   utter.rate = 1; // 말속도
-  //   utter.pitch = 1; // 음 높이
-  //   speechSynthesis.speak(utter);
-  // };
-  // useEffect(() => {
-  //   if (showPopup) {
-  //     speechSynthesis.cancel(); // 이전 재생 중단
-  //     speak(QUESTIONS[questionIndex].title);
-  //   }
-  // }, [showPopup]);
-
-  // 음성 인식
-  // const volumeRef = useRef(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  // 질문 리스트 (임시 하드코딩 → 나중에 백엔드 연동)
+  // 질문 리스트
   const QUESTIONS = [
     {
       id: 1,
       title:
-        '\n프론트엔드 경험이 많은 편인데,\n본인이 보유한 백엔드 역량은 어떤 것들이 있고,\n\n입사 후 6개월 동안 백엔드 역할에 어떻게 적응하고 성장해갈 계획인지 설명해주세요.',
+        '\n프론트엔드 중심의 경험이 많은데,\n\n백엔드 역량은 어떤 식으로 보완해 왔는지,\n그리고 입사 후 1년 안에 어떤 수준의 백엔드 개발자로 성장할 계획인지 설명해주세요.',
     },
     {
       id: 2,
       title:
-        '\n학부 시절 개발했던 커뮤니티 서비스를\n카카오처럼 트래픽이 큰 서비스 기준으로 다시 설계한다면,\n\n백엔드 관점에서 어떤 부분을 중심으로 어떻게 개선하실지 설명해주세요.',
+        '\n대규모 트래픽 환경을 가정할 때,\n로그인, 채팅, 푸시 같은 핵심 API를 어떻게 설계하실 건가요?\n\n성능과 안정성을 위해 어떤 아키텍처적 고려를 하실지 구체적으로 말씀해주세요.',
     },
     {
       id: 3,
       title:
-        '\n이전 회사에서의 경험을 바탕으로,\n\n코드 리뷰나 배포와 모니터링 같은 백엔드 프로세스를\n어떻게 더 효율적이고 안정적으로 만들 수 있을지 설명해주세요.',
+        '\n이미 운영 중인 레거시 백엔드를 점진적으로 개선해야 한다면,\n어떤 기준으로 우선순위를 정하고, 어떻게 협업 구조를 설계해 개선을 추진할지\n\n본인의 실제 경험을 바탕으로 설명해 주세요.',
     },
   ];
 
@@ -59,15 +43,72 @@ function InterviewRecord() {
   const [showPopup, setShowPopup] = useState(true);
   const [questionIndex, setQuestionIndex] = useState(0);
 
-  // 질문 팝업 3초간 표시 후 인터뷰 시작
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowPopup(false); // 팝업 숨기기
-      startInterviewProcess(); // 스트림 연결 + 녹화 시작
-    }, 3000);
+  const audioRef = useRef(null);
+  const isPlayingRef = useRef(false); // 중복 재생 방지
+  const hasPlayedRef = useRef(false); // 팝업당 1회 재생
+  const firstRender = useRef(true);
 
-    return () => clearTimeout(timer);
+  const playTTS = async (text) => {
+    if (isPlayingRef.current) return;
+    isPlayingRef.current = true;
+
+    // 이전 오디오 종료(초기화는 절대 금지)
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    try {
+      const res = await fetch('https://twilight-wind-0c08.eun0110.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+
+      const { audioContent } = await res.json();
+
+      const audio = new Audio('data:audio/mp3;base64,' + audioContent);
+      audioRef.current = audio;
+
+      return new Promise((resolve) => {
+        audio.onended = () => {
+          isPlayingRef.current = false;
+          resolve();
+        };
+        audio.play().catch((err) => {
+          console.error('play error:', err);
+          isPlayingRef.current = false;
+          resolve();
+        });
+      });
+    } catch (err) {
+      console.error(err);
+      isPlayingRef.current = false;
+    }
+  };
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    hasPlayedRef.current = false;
   }, [questionIndex]);
+
+  useEffect(() => {
+    // 팝업 켜져 있고, 이번 질문에서 아직 TTS 안 했을 때만 실행
+    if (showPopup && !hasPlayedRef.current) {
+      hasPlayedRef.current = true;
+
+      (async () => {
+        await playTTS(QUESTIONS[questionIndex].title);
+
+        // TTS 끝 → 팝업 닫고 녹화 시작
+        setShowPopup(false);
+        startInterviewProcess();
+      })();
+    }
+  }, [showPopup, questionIndex]);
 
   // 오디오 분석 함수
   const createAudioAnalyzer = (stream) => {
@@ -282,7 +323,7 @@ function InterviewRecord() {
     }
     // 다음 질문 진행
     setQuestionIndex(next);
-    setTimeLeft(5);
+    setTimeLeft(30);
     setShowPopup(true);
   };
 
