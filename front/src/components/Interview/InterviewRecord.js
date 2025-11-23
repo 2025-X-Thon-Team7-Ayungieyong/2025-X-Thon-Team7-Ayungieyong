@@ -9,21 +9,47 @@ function InterviewRecord() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // const speak = (text) => {
+  //   const utter = new SpeechSynthesisUtterance(text);
+  //   utter.lang = 'ko-KR';
+  //   utter.rate = 1; // 말속도
+  //   utter.pitch = 1; // 음 높이
+  //   speechSynthesis.speak(utter);
+  // };
+  // useEffect(() => {
+  //   if (showPopup) {
+  //     speechSynthesis.cancel(); // 이전 재생 중단
+  //     speak(QUESTIONS[questionIndex].title);
+  //   }
+  // }, [showPopup]);
+
   // 음성 인식
-  const volumeRef = useRef(0);
+  // const volumeRef = useRef(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   // 질문 리스트 (임시 하드코딩 → 나중에 백엔드 연동)
   const QUESTIONS = [
-    { id: 1, title: '다른 사람이 생각하는 자신의 장점과 단점을 말해주세요.' },
-    { id: 2, title: '갈등을 해결했던 경험을 말해주세요.' },
-    { id: 3, title: '본인이 맡았던 역할 중 가장 어려웠던 점은?' },
+    {
+      id: 1,
+      title:
+        '\n프론트엔드 경험이 많은 편인데,\n본인이 보유한 백엔드 역량은 어떤 것들이 있고,\n\n입사 후 6개월 동안 백엔드 역할에 어떻게 적응하고 성장해갈 계획인지 설명해주세요.',
+    },
+    {
+      id: 2,
+      title:
+        '\n학부 시절 개발했던 커뮤니티 서비스를\n카카오처럼 트래픽이 큰 서비스 기준으로 다시 설계한다면,\n\n백엔드 관점에서 어떤 부분을 중심으로 어떻게 개선하실지 설명해주세요.',
+    },
+    {
+      id: 3,
+      title:
+        '\n이전 회사에서의 경험을 바탕으로,\n\n코드 리뷰나 배포와 모니터링 같은 백엔드 프로세스를\n어떻게 더 효율적이고 안정적으로 만들 수 있을지 설명해주세요.',
+    },
   ];
 
   const hiddenVideoRef = useRef(null);
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
-  const streamRef = useRef(null);
+  // const streamRef = useRef(null);
 
   const [error, setError] = useState('');
   const [timeLeft, setTimeLeft] = useState(5); // timer 시간 설정
@@ -38,7 +64,7 @@ function InterviewRecord() {
     const timer = setTimeout(() => {
       setShowPopup(false); // 팝업 숨기기
       startInterviewProcess(); // 스트림 연결 + 녹화 시작
-    }, 3000);
+    }, 7000);
 
     return () => clearTimeout(timer);
   }, [questionIndex]);
@@ -50,7 +76,7 @@ function InterviewRecord() {
     const microphone = audioContext.createMediaStreamSource(stream);
     const scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
 
-    analyser.smoothingTimeConstant = 0.1;
+    // analyser.smoothingTimeConstant = 0.1;
     analyser.fftSize = 1024;
 
     microphone.connect(analyser);
@@ -62,30 +88,31 @@ function InterviewRecord() {
       analyser.getByteFrequencyData(dataArray);
 
       const volume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-      const isNowSpeaking = volume > 20; // threshold 조절 가능
+      // const isNowSpeaking = volume > 20; // threshold 조절 가능
 
-      setIsSpeaking(isNowSpeaking);
+      // setIsSpeaking(isNowSpeaking);
+      setIsSpeaking(volume > 20);
     };
   };
 
-  // 카메라 + 녹화 시작
+  // 녹화 시작
   const startInterviewProcess = async () => {
     try {
-      setError('');
+      // setError('');
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
 
-      streamRef.current = stream;
+      // streamRef.current = stream;
 
       if (hiddenVideoRef.current) {
         hiddenVideoRef.current.srcObject = stream;
 
-        hiddenVideoRef.current.onloadedmetadata = () => {
-          hiddenVideoRef.current.play();
-        };
+        // hiddenVideoRef.current.onloadedmetadata = () => {
+        hiddenVideoRef.current.play();
+        // };
         // 오디오 분석 시작
         createAudioAnalyzer(stream);
       }
@@ -98,26 +125,36 @@ function InterviewRecord() {
   };
 
   // 영상 업로드 함수
-  const uploadVideoToServer = async (blob, questionId) => {
-    try {
-      const formData = new FormData();
-      formData.append('video', blob, `question_${questionId}.webm`);
-      formData.append('interviewId', id);
+  // const uploadVideoToServer = async (blob, questionId) => {
+  //   try {
+  //     const formData = new FormData();
+  //     // formData.append('video', blob, `question_${questionId}.webm`);
+  //     const file = new File([blob], `question_${questionId}.webm`, {
+  //       type: 'video/webm',
+  //     });
 
-      formData.append('questionId', questionId);
+  //     formData.append('video', file);
+  //     formData.append('interviewId', id);
+  //     formData.append('questionId', questionId);
 
+  //     const res = await fetch('/api/video/upload', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
 
-      const res = await fetch('/api/video/upload', {
-        method: 'POST',
-        body: formData,
-      });
+  //     if (!res.ok) throw new Error('업로드 실패');
 
-      if (!res.ok) throw new Error('업로드 실패');
+  //     console.log('업로드 성공');
+  //   } catch (err) {
+  //     console.error('업로드 에러:', err);
+  //   }
+  // };
 
-      console.log('업로드 성공');
-    } catch (err) {
-      console.error('업로드 에러:', err);
-    }
+  // 서버에 영상 업로드 대신 sessionStorage에 저장 (프론트에서 임시 처리)
+  const saveVideoLocally = (blob, questionId) => {
+    const url = URL.createObjectURL(blob);
+    sessionStorage.setItem(`video_${questionId}`, url);
+    console.log(`Saved blob URL to sessionStorage: video_${questionId}`);
   };
 
   // ffmpeg 인스턴스 준비
@@ -161,40 +198,46 @@ function InterviewRecord() {
       console.log('Saved webm size:', blob.size);
 
       // 서버 업로드
-      await uploadVideoToServer(blob, questionIndex + 1);
+      // await uploadVideoToServer(blob, questionIndex + 1);
 
-      // webm → mp4 저장 형식 변환
-      // const mp4Blob = await convertToMP4(webmBlob);
-
-      // 안정적인 다운로드 트리거 방식
-
-      // const url = URL.createObjectURL(blob);
-      // const a = document.createElement('a');
-      // a.style.display = 'none';
-      // a.href = url;
-      // a.download = `interview_${questionIndex + 1}.webm`; // 파일명
-
-      // document.body.appendChild(a);
-      // a.click();
-      // document.body.removeChild(a);
-
-      // setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-      // 다음 질문으로 이동
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = `interview_${questionIndex + 1}.webm`; // 파일명
-
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      // 서버 X, sessionStorage 저장
+      saveVideoLocally(blob, questionIndex + 1);
 
       handleNextQuestion();
     };
+
+    // webm → mp4 저장 형식 변환
+    // const mp4Blob = await convertToMP4(webmBlob);
+
+    // 안정적인 다운로드 트리거 방식
+
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement('a');
+    // a.style.display = 'none';
+    // a.href = url;
+    // a.download = `interview_${questionIndex + 1}.webm`; // 파일명
+
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+
+    // setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    // 다음 질문으로 이동
+    //   const url = URL.createObjectURL(blob);
+    //   const a = document.createElement('a');
+    //   a.style.display = 'none';
+    //   a.href = url;
+    //   a.download = `interview_${questionIndex + 1}.webm`; // 파일명
+
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   document.body.removeChild(a);
+
+    //   setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    //   handleNextQuestion();
+    // };
 
     recorder.start();
     setRecording(true);
@@ -268,7 +311,7 @@ function InterviewRecord() {
         <div className="popup-overlay">
           <div className="popup-box">
             <h2>{questionIndex + 1}번째 질문</h2>
-            <p>{QUESTIONS[questionIndex].title}</p>
+            <p style={{ whiteSpace: 'pre-line' }}>{QUESTIONS[questionIndex].title}</p>
           </div>
         </div>
       )}

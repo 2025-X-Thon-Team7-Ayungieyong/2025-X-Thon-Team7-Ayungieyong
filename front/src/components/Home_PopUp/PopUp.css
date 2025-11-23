@@ -21,13 +21,20 @@
   max-width: 620px;
   padding: 35px 40px;
   border-radius: 18px;
-  background-image: url('../../assets/home_background.png');
+  background-image: url('../../assets/popup_background.png');
   background-size: cover;
   background-position: center;
   position: relative;
   color: white;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.65);
+}
+
+.popup-inputsss {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 330px;
 }
 
 /* Step1 제목 */
@@ -44,13 +51,12 @@
   margin-bottom: 6px;
   font-size: 15px;
   font-weight: 500;
+  padding-left: 10px;
 }
 
 /* input + select 공통 */
 .popup-input,
 .popup-select {
-  width: 100%;
-  height: 45px;
   border-radius: 12px;
   border: none;
 
@@ -59,24 +65,38 @@
   outline: none;
 }
 
+.popup-input {
+  width: 603px;
+  padding-left: 15px;
+  height: 43px;
+}
+
+.popup-input:focus {
+  outline: 2px solid #6c47ff;
+  border-radius: 6px;
+}
+
 /* select 커스텀 (피그마 화살표 스타일) */
 .popup-select {
+  width: 100%;
   appearance: none;
   padding-left: 15px;
   background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='%23232323' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 7l5 6 5-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
+  height: 45px;
 }
 /* 취소 버튼 */
 .popup-cancel {
   width: 110px;
   height: 46px;
   border-radius: 25px;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.2); /* 10% 흰색 */
   border: 1.8px solid white;
   color: white;
   font-size: 15px;
   cursor: pointer;
+  backdrop-filter: blur(8px);
 }
 
 /* 다음 버튼 */
@@ -103,11 +123,10 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 18px;
   color: white;
   box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.35);
   border: 1.6px solid rgba(255, 255, 255, 0.12);
-  padding: 15px 0;
+  padding: 20px 0;
 }
 
 /* 파일 아이콘 */
@@ -119,7 +138,7 @@
 
 /* 업로드 텍스트 */
 .upload-text {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   opacity: 0.95;
 }
@@ -129,6 +148,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 550px;
 }
 
 /* 질문 리스트 영역 */
@@ -178,7 +199,7 @@
 
 /* 새 질문 만들기 점선 박스 */
 .question-add-box {
-  width: 100%;
+  width: 620px;
   height: 55px;
   border-radius: 12px;
   border: 2px dashed rgba(255, 255, 255, 0.5);
@@ -225,7 +246,6 @@
 .device-status-row {
   display: flex;
   gap: 10px;
-  margin-top: 15px;
 }
 
 .device-status {
@@ -250,10 +270,9 @@
 
 /* 버튼 고정 */
 .popup-buttons-fixed {
-  right: 30px;
-  bottom: 25px;
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  margin-top: 13px;
+  margin-top: 20px;
+  width: 100%;
 }

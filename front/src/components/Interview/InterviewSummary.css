@@ -1,103 +1,165 @@
-.summary-job-title {
-  width: 100%;
-  max-width: 1100px;
-
-  margin: 30px auto 25px auto;
-  padding: 18px 0;
-
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-
-  background: linear-gradient(90deg, #000428, #004e92);
-  border-radius: 10px;
-}
-
-.summary-container {
-  width: 100%;
-  max-width: 1200px;
+/* ===== 전체 레이아웃 ===== */
+.summary-page-container {
+  max-width: 900px;
   margin: 0 auto;
-
-  padding: 30px 30px 60px;
-
-  background: white;
-  border: 2px solid #dcdcdc;
-  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  height: calc(100vh - 120px);
+  font-family: 'Noto Sans KR';
 }
 
-.summary-header {
-  font-size: 26px;
+/* 상단 배너 */
+.summary-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 95px;
+  background-size: cover;
+  border-radius: 7px;
+}
+
+/* 직무명 텍스트 */
+.summary-title-banner {
+  text-align: center;
+  font-size: 34px;
   font-weight: 800;
-  margin-bottom: 25px;
+  color: white;
+  padding-top: 20px;
 }
 
-.summary-cards {
+/* 전체 card wrapper */
+.summary-card-wrapper {
+  margin-top: 35px;
+  background: white;
+  border: 2px solid #0a193d;
+  border-radius: 7px;
+  padding: 10px 20px;
+
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 총평 제목 */
+.summary-header {
+  height: 65px;
   display: flex;
-  justify-content: space-between;
-  gap: 25px;
+  font-size: 21px;
+  font-weight: 700;
+  background: white;
 }
 
+/* === 피드백 3개 박스 레이아웃 === */
+.summary-section {
+  display: flex;
+  gap: 16px;
+  height: calc(100% - 220px);
+  min-height: 260px;
+}
+
+/* 개별 카드 */
 .summary-card {
   flex: 1;
-  background: #ffffff;
-
-  border: 1.5px solid #d9d9d9;
-  border-radius: 12px;
-
-  padding: 20px 25px;
-
-  min-height: 260px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 2px solid #bbbbbb;
+  border-radius: 10px;
+  padding: 16px;
+  background: white;
+  font-weight: 700;
 }
 
+/* 카드 제목 */
 .summary-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #3f36b1;
+  background-color: #eef3ff;
+  padding: 5px 12px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #e9edff;
-  padding: 8px 12px;
-  font-size: 18px;
-  font-weight: 800;
+  gap: 6px;
   border-radius: 8px;
-  margin-bottom: 14px;
-  gap: 8px;
-}
-
-.summary-card ul {
-  list-style-type: disc;
-  padding-left: 20px;
-}
-
-.summary-bottom-nav {
-  margin-top: 40px;
-  display: flex;
-  gap: 15px;
-}
-
-.nav-btn {
-  flex: 1;
-  height: 90px;
-
-  background: #e0e0e0;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.nav-btn.active {
-  background: #0a1a40;
-  color: white;
-  font-weight: 800;
+  margin-bottom: 12px;
 }
 
 .emoji-icon {
   width: 22px;
   height: 22px;
-  object-fit: contain;
-  display: block;
-  transform: translateY(1px);
+}
+
+/* 피드백 리스트 */
+.summary-card ul {
+  list-style: disc;
+  padding-left: 18px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.summary-card li {
+  margin-bottom: 6px;
+}
+
+/* === 하단 네비게이션 버튼  === */
+.summary-list-scroll {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 공통 버튼 */
+.nav-btn,
+.summarypage-btn {
+  height: 85px;
+  border-radius: 10px;
+  border: 2px solid #d1d1d1;
+  background: #ececec;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.nav-btn {
+  position: relative;
+  background: repeating-conic-gradient(#eee 0% 25%, #ddd 0% 50%) 50% / 35px 35px;
+  color: #333;
+  width: 250px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 8px 12px;
+  text-align: right;
+}
+
+/* hover 시 */
+.nav-btn:hover {
+  background: #0a1a40;
+  border-color: #0a1a40;
+  color: white;
+}
+
+/* 활성 버튼 */
+.nav-btn.active {
+  background: #0a1a40;
+  border-color: #0a1a40;
+  color: white;
+}
+
+/* 총평 / 로드맵 버튼 */
+.summarypage-btn {
+  max-width: 200px;
+  height: 85px;
+  background: #0a1a40;
+  color: white;
+  border-color: #0a1a40;
+  width: 130px;
+  font-weight: 700;
+  font-size: 18px;
 }

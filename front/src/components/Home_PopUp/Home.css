@@ -1,19 +1,20 @@
 /* 전체 컨테이너 */
 .home-container {
-  padding: 40px 0 40px 50px;
   font-family: 'Noto Sans KR', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 세로는 자유 */
 }
 
 /* 제목 + 카드 전체를 감싸는 중앙 래퍼 */
 .home-content {
   width: 100%;
   max-width: 1100px; /* 카드 3개가 들어갈 적당한 폭 */
-  padding: 40px 0;
 }
 
 /* 제목 */
 .home-title {
-  font-size: 32px;
+  font-size: 40px;
   font-weight: 800;
   margin-bottom: 35px;
   color: #0a0a19;
@@ -22,10 +23,9 @@
 
 /* 가운데 전체 카드 영역 래퍼 */
 .interview-wrapper {
-  gap: 25px;
   display: flex;
   flex-wrap: wrap;
-  margin-left: 0;
+  justify-content: space-between;
 }
 
 /* 카드 리스트 컨테이너 (가로 정렬) */
@@ -40,54 +40,57 @@
 
 /* 개별 인터뷰 카드 */
 .interview-card {
-  width: 240px;
-  height: 150px;
+  width: 300px;
+  height: 200px;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
   color: white;
   padding: 18px 20px;
-  cursor: pointer;
   background-image: url('../../assets/home_background.png');
 
   background-position: center;
   box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
+  margin: 20px 0;
 }
 
 /* 카드 내용 텍스트 */
 .interview-card h3 {
-  font-size: 18px;
+  font-size: 25px;
   font-weight: 700;
   margin-bottom: 5px;
+  padding-left: 5px;
 }
 
-.interview-card p {
-  font-size: 14px;
+.interview-card-time {
+  font-size: 17px;
   opacity: 0.9;
+  padding-left: 10px;
 }
 
 /* 조회하기 버튼 */
 .interview-button {
-  width: 110px;
-  height: 36px;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  height: 45px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  font-size: 18px;
   font-weight: 600;
-  color: #fff;
-  background: linear-gradient(270deg, #7326f5 0%, #2006a7 50%, #0a091a 100%);
-  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.45);
+  color: #f5f5f5; /* 텍스트 색 */
+  background: rgba(245, 245, 245, 0.15); /* F5F5F5 + 15% */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), /* 외부 그림자 */ inset 0 0 10px rgba(255, 255, 255, 0.05); /* 내부 하이라이트 */
   cursor: pointer;
 }
 
 /* 새 면접 만들기 카드 */
 .new-card {
-  width: 276.8px;
-  height: 182.8px;
-  border: 2px dashed #3a3a3a;
+  width: 340px;
+  height: 236px;
+  border: 3.5px dashed #3a3a3a;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -97,6 +100,7 @@
   color: #0a0a19;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.2);
+  margin: 20px 0;
 }
 
 .new-card:hover {
@@ -106,5 +110,16 @@
 .new-plus {
   font-size: 38px;
   font-weight: 700;
-  margin-bottom: 5px;
+  padding-top: 10px;
+}
+
+.plus_text {
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+.plus-icon-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

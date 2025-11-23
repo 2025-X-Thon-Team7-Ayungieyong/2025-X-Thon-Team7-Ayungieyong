@@ -9,7 +9,7 @@ export default function Home() {
 
   // 임시 데이터
   const interviews = [
-    { id: 1, title: '삼성 SDK 면접', date: '2025-11-01' },
+    { id: 1, title: '삼성 SDK 프론트엔드', date: '2025-11-05' },
     { id: 2, title: '카카오 백엔드', date: '2025-11-01' },
   ];
 
@@ -23,7 +23,7 @@ export default function Home() {
           {interviews.map((item) => (
             <div key={item.id} className="interview-card">
               <h3>{item.title}</h3>
-              <p>일시: {item.date}</p>
+              <div className="interview-card-time">일시: {item.date}</div>
 
               <button className="interview-button" onClick={() => navigate(`/interview/${item.id}/summary`)}>
                 조회하기
@@ -33,8 +33,10 @@ export default function Home() {
 
           {/* 새 면접 만들기 박스 */}
           <div onClick={() => setOpenPopup(true)} className="new-card">
-            <div className="new-plus">+</div>
-            <div>새 면접 만들기</div>
+            <div className="plus-icon-box">
+              <img src={require('../../assets/plus_icon.png')} alt="file icon" className="new-plus" />
+              <div className="plus_text">새 면접 만들기</div>
+            </div>
           </div>
         </div>
       </div>
