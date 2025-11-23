@@ -1,0 +1,278 @@
+/* 팝업 전체 배경 (반투명 블러) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+  z-index: 999;
+}
+
+/* 팝업 카드 */
+.popup-container {
+  width: 620px;
+  height: 510px;
+  min-width: 620px;
+  max-width: 620px;
+  padding: 35px 40px;
+  border-radius: 18px;
+  background-image: url('../../assets/popup_background.png');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: white;
+  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.65);
+}
+
+.popup-inputsss {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 330px;
+}
+
+/* Step1 제목 */
+.popup-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 30px;
+}
+
+/* label */
+.popup-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  padding-left: 10px;
+}
+
+/* input + select 공통 */
+.popup-input,
+.popup-select {
+  border-radius: 12px;
+  border: none;
+
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.85);
+  outline: none;
+}
+
+.popup-input {
+  width: 603px;
+  padding-left: 15px;
+  height: 43px;
+}
+
+.popup-input:focus {
+  outline: 2px solid #6c47ff;
+  border-radius: 6px;
+}
+
+/* select 커스텀 (피그마 화살표 스타일) */
+.popup-select {
+  width: 100%;
+  appearance: none;
+  padding-left: 15px;
+  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='%23232323' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 7l5 6 5-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  height: 45px;
+}
+/* 취소 버튼 */
+.popup-cancel {
+  width: 110px;
+  height: 46px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.2); /* 10% 흰색 */
+  border: 1.8px solid white;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+/* 다음 버튼 */
+.popup-next {
+  width: 110px;
+  height: 46px;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(90deg, #14065c 0%, #5271f5 100%);
+  border: none;
+}
+
+/* 업로드 박스 전체 */
+.upload-box {
+  width: 100%;
+  height: 90px;
+  border-radius: 20px;
+  background: rgba(20, 20, 20, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.35);
+  border: 1.6px solid rgba(255, 255, 255, 0.12);
+  padding: 20px 0;
+}
+
+/* 파일 아이콘 */
+.upload-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+}
+
+/* 업로드 텍스트 */
+.upload-text {
+  font-size: 20px;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+/* Step3 wrapper */
+.popup-step-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 550px;
+}
+
+/* 질문 리스트 영역 */
+.question-list {
+  width: 100%;
+  max-height: 170px;
+  overflow-y: auto;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+/* 개별 질문 박스 */
+.question-item {
+  width: 95%;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 14px 14px;
+  margin-bottom: 10px;
+}
+
+/* 질문 입력창 */
+.question-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+}
+
+/* X 삭제 버튼 */
+.question-delete {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.15);
+  color: #222;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 새 질문 만들기 점선 박스 */
+.question-add-box {
+  width: 620px;
+  height: 55px;
+  border-radius: 12px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 25px;
+}
+
+.question-add-box:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Step4 전체를 상대 위치로 */
+.step4-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 80px; /* 버튼 때문에 공간 확보 */
+  text-align: center;
+}
+
+/* 비디오 박스 */
+.device-video-box {
+  width: 100%;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.device-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+/* 상태 표시 행 */
+.device-status-row {
+  display: flex;
+  gap: 10px;
+}
+
+.device-status {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.device-status.ok {
+  background: rgba(210, 255, 210, 0.9);
+  color: #0a7a0a;
+}
+
+.device-status.no {
+  background: rgba(255, 210, 210, 0.9);
+  color: #b80000;
+}
+
+/* 버튼 고정 */
+.popup-buttons-fixed {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  width: 100%;
+}

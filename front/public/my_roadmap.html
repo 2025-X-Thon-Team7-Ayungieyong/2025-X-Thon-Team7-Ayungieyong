@@ -1,0 +1,727 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>커리어 대시보드 · 프론트엔드 → 백엔드 확장 로드맵</title>
+  <style>
+    :root {
+      --bg: #F5F5F5;
+      --panel: #FFFFFF;
+      --highlight-bg: #0A193D;
+      --point-text: #0A091A;
+      --muted: #777777;
+      --border: #E0E0E0;
+      --accent: #0A193D;
+      --pill-bg: #E7E9F3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 12px 40px;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Pretendard", system-ui, sans-serif;
+      color: var(--point-text);
+    }
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    h1, h2, h3, h4 {
+      margin: 0 0 8px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    h1 { font-size: 26px; }
+    h2 { font-size: 20px; margin-top: 24px; }
+    h3 { font-size: 16px; margin-top: 16px; }
+    p {
+      margin: 4px 0 8px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    .muted { color: var(--muted); font-size: 12px; }
+    .card {
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.02);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #EEF0F5;
+      color: #444;
+      white-space: nowrap;
+    }
+    .pill-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--pill-bg);
+      font-size: 11px;
+      color: #111827;
+      text-decoration: none;
+      border: 1px solid rgba(10,25,61,0.08);
+      transition: background 0.15s ease, transform 0.05s ease;
+    }
+    .pill span {
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+    .pill:hover {
+      background: #DDE2F4;
+      transform: translateY(-0.5px);
+    }
+    details {
+      border-radius: 10px;
+      background: #FAFAFA;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      margin-top: 6px;
+    }
+    summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    summary::-webkit-details-marker { display: none; }
+    .summary-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .summary-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: var(--highlight-bg);
+      color: #FFFFFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .summary-arrow {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    details[open] .summary-arrow {
+      transform: rotate(90deg);
+    }
+    .details-body {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed #E0E0E0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    ul {
+      margin: 4px 0 4px 18px;
+      padding: 0;
+      font-size: 13px;
+    }
+    li { margin-bottom: 3px; }
+    .highlight {
+      background: var(--highlight-bg);
+      color: #F9FAFB;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .highlight h2 {
+      color: #F9FAFB;
+      margin-bottom: 4px;
+    }
+    .highlight p, .highlight li {
+      color: #E5E7EB;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #E5E7EB;
+    }
+    .roadmap-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .roadmap-card {
+      border-radius: 12px;
+      padding: 12px 12px;
+      background: #FAFAFA;
+      border: 1px solid #E5E5E5;
+    }
+    .roadmap-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .roadmap-title-row h2, .roadmap-title-row h3 {
+      margin: 0;
+    }
+    .roadmap-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 6px;
+      margin-bottom: 2px;
+    }
+    .roadmap-step {
+      border-radius: 10px;
+      padding: 8px 9px;
+      background: #FFFFFF;
+      border: 1px solid #ECECEC;
+      margin-top: 6px;
+    }
+    .roadmap-step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    .roadmap-step-header span {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .roadmap-step-header .label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .roadmap-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .roadmap-meta strong { color: #4B5563; }
+    .inline-kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: #E5E7EB;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .quick-actions ul { margin-left: 18px; }
+    @media (max-width: 640px) {
+      body { padding: 16px 10px 32px; }
+      .card { padding: 14px 14px; }
+      .highlight { padding: 12px 12px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 헤더 -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1>프론트엔드 → 백엔드 확장 커리어 대시보드</h1>
+        <p class="muted">
+          면접 평가 · 포트폴리오 리포트 · (가상) 웹 검색 인사이트를 통합한 맞춤 로드맵
+        </p>
+      </div>
+      <span class="tag">Profile: 웹·앱 프론트엔드 → 백엔드 확장 지향</span>
+    </div>
+    <p style="font-size:13px;">
+      현재 강점(질문 의도 파악, 협업, 성능/품질 개선)을 유지하면서, 
+      <strong>“백엔드·아키텍처 역량을 실증하고 스토리와 문서로 정렬”</strong>하는 것이 핵심 과제입니다.
+    </p>
+  </section>
+
+  <!-- 핵심 진단 하이라이트 -->
+  <section class="highlight">
+    <h2>핵심 진단 · 한 줄 요약</h2>
+    <ul>
+      <li><strong>장점:</strong> 질문 의도 파악, 백엔드 개념 이해, 협업/운영 관점, 성능·품질 개선 경험, 성장 의지.</li>
+      <li><strong>리스크:</strong> 실무 사례 부족, 문서·면접 간 포지션 괴리, 문장/전달력 미흡, 경험 범위 과장으로 보일 여지.</li>
+      <li><strong>전략:</strong> “웹+앱 풀프론트엔드”를 기반으로, 
+        <strong>작은 풀스택/백엔드 프로젝트로 이론을 실증</strong>하고, 
+        <strong>문서·포트폴리오·면접 답변을 한 스토리로 정렬</strong>합니다.
+      </li>
+    </ul>
+    <div class="badge-row">
+      <span class="badge">면접 점수: 68/100 (보류)</span>
+      <span class="badge">타깃: 프론트 중심 포지션 + 백엔드 성장</span>
+      <span class="badge">포지셔닝: 웹+앱 풀프론트엔드 · 성능/품질 강점</span>
+    </div>
+  </section>
+
+  <!-- Debate 최종 요약 -->
+  <section class="card">
+    <div class="card-header">
+      <h2>1. Debate 최종 요약</h2>
+      <span class="tag">면접 평가 요약</span>
+    </div>
+
+    <details open>
+      <summary>
+        <span class="summary-label">
+          <span class="summary-icon">D</span>
+          Debate 리포트 핵심 정리
+        </span>
+        <span class="summary-arrow">▶</span>
+      </summary>
+      <div class="details-body">
+        <h3>1-1. 강점 (Good)</h3>
+        <ul>
+          <li><strong>질문 의도 파악:</strong> 역량·목표, 아키텍처, 협업/우선순위 등 질문의 축을 정확히 짚음.</li>
+          <li><strong>백엔드·아키텍처 개념 이해:</strong> 토큰 인증, 정규화·인덱스, Redis, rate limiting, MQ, read replica, 서킷 브레이커, 점진적 마이그레이션 등을 상황에 맞게 설명.</li>
+          <li><strong>협업/운영 관점:</strong> 장애 빈도·사용자 영향도·트래픽 기반 우선순위, API 계약·디프리케이션 일정·테스트 범위 합의 등 실제 서비스 운영 관점 보유.</li>
+          <li><strong>성장 의지:</strong> “1년 내 한 도메인 마이크로서비스를 설계~운영까지 책임지는 백엔드 개발자” 목표 제시.</li>
+        </ul>
+
+        <h3>1-2. 약점 (Bad)</h3>
+        <ul>
+          <li><strong>불안·두려움 노출:</strong> 표정/톤에서 fear·sadness 비율이 높아, 자신감 부족 인상 가능.</li>
+          <li><strong>구체 사례 부족:</strong> 키워드는 풍부하지만, “어떤 프로젝트에서 무엇을 어떻게 했고 결과가 무엇인지”가 부족해 실무 경험인지 이론인지 모호.</li>
+          <li><strong>표현력/문장력:</strong> 오타·비문 다수로, 논리보다 “정확히 설명 못하는 지원자” 인상을 줄 위험.</li>
+          <li><strong>포지션 괴리:</strong> 문서상 “FE 중심, BE 기초” vs 면접상 “고급 백엔드 설계”로 난이도 불일치.</li>
+          <li><strong>과장 가능성:</strong> 포트폴리오에 없는 고급 DB/트래픽/인프라 경험을 구체 맥락 없이 언급.</li>
+        </ul>
+
+        <h3>1-3. 발전 방향</h3>
+        <ul>
+          <li><strong>비언어 연습:</strong> 복식호흡, 1초 멈춤, 말 끝 또렷하게, 카메라 연습으로 긴장 완화.</li>
+          <li><strong>경험 기반 구조화:</strong> 모든 답변을 <span class="inline-kbd">문제 → 선택 → 구현 → 결과 → 배운 점</span>으로 재구성.</li>
+          <li><strong>포지션 정합성:</strong> 문서에 백엔드 학습/사이드프로젝트를 명시하거나, 면접에서 “경험 vs 이상 설계”를 명확히 구분.</li>
+          <li><strong>표현·용어 정제:</strong> 스스로 쓴 답을 소리 내어 읽고 수정, 용어(타임아웃 vs 서킷 브레이커 등) 정확히 사용.</li>
+          <li><strong>이론 → 실습 → 실무:</strong> rate limit, MQ, read replica 등을 작은 프로젝트에 실제 적용 후 포트폴리오에 기록.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- 포트폴리오/답변 통합 요약 -->
+  <section class="card">
+    <div class="card-header">
+      <h2>2. 포트폴리오 & 답변 통합 요약</h2>
+      <span class="tag">브랜딩 & 스토리 정렬</span>
+    </div>
+
+    <details open>
+      <summary>
+        <span class="summary-label">
+          <span class="summary-icon">P</span>
+          현재 포지셔닝 · 강점/격차 요약
+        </span>
+        <span class="summary-arrow">▶</span>
+      </summary>
+      <div class="details-body">
+        <h3>2-1. 현재 강점 스토리</h3>
+        <ul>
+          <li><strong>웹+앱 풀프론트엔드:</strong> 웹 FE → RN 앱 → 프리랜서/사이드까지 자연스러운 경력 흐름.</li>
+          <li><strong>측정 가능한 성과:</strong> LCP 3.2s → 1.8s, 이탈률 15% 감소, 코드 중복 30% 감소, 개발 속도 20% 향상 등 수치 기반 성과.</li>
+          <li><strong>협업/제품 마인드:</strong> 데모 세션 제안·운영, 기획/디자인/QA와의 긴밀한 협업, 사용자 플로우 중심 논의.</li>
+          <li><strong>지식 공유:</strong> 사내 위키, 성능 가이드, 기술 블로그/스터디 등 “팀 생산성 올리는 개발자” 이미지.</li>
+          <li><strong>성능·품질 특화:</strong> 성능 최적화, 번들 다이어트, Crashlytics 기반 안정성 개선 등 “성능/품질에 강한 FE”.</li>
+        </ul>
+
+        <h3>2-2. 격차/보완 포인트</h3>
+        <ul>
+          <li><strong>맞춤 메시지 부족:</strong> 특정 회사/도메인/스택에 맞춘 문장이 적어 “범용 자기소개서” 느낌.</li>
+          <li><strong>백엔드 목표 연결 부족:</strong> 자기소개서에는 백엔드/인프라 목표가 거의 없고, 면접에서만 강하게 드러남.</li>
+          <li><strong>차별화 스토리 약함:</strong> “협업, 사용자 관점, 성능 개선”은 좋지만 흔함. “내가 주도한 변화”를 더 전면에.</li>
+          <li><strong>가독성:</strong> 긴 문단, 구조화 부족으로 핵심 메시지가 묻힘.</li>
+          <li><strong>백엔드 실증 부족:</strong> Node/DB/인프라 경험이 포트폴리오에서 구체적으로 드러나지 않아, 면접 답변과 간극.</li>
+        </ul>
+
+        <h3>2-3. 통합 브랜딩 제안</h3>
+        <ul>
+          <li><strong>타이틀:</strong> “웹·모바일을 모두 경험한, 성능과 품질에 강한 풀프론트엔드 개발자 (백엔드 확장 중)”</li>
+          <li><strong>핵심 라인 3개:</strong>
+            <ul>
+              <li>① <strong>성능/안정성 최적화</strong>로 실제 지표를 개선해 본 경험</li>
+              <li>② <strong>웹+앱 풀프론트엔드</strong>로 일관된 사용자 경험 설계</li>
+              <li>③ <strong>백엔드·아키텍처 학습을 실습으로 증명</strong>하는 성장 스토리</li>
+            </ul>
+          </li>
+          <li><strong>문서/면접 정렬:</strong> 포트폴리오 상단에 “현재: 프론트 중심 / 진행 중: Node.js·DB·인프라 실습”을 명시해 투명성 확보.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- 검색 인사이트 및 추천 링크 -->
+  <section class="card">
+    <div class="card-header">
+      <h2>3. 검색 인사이트 & 추천 리소스</h2>
+      <span class="tag">학습/프로그램 가이드</span>
+    </div>
+
+    <details open>
+      <summary>
+        <span class="summary-label">
+          <span class="summary-icon">R</span>
+          프로그램 · 강의 · 실습 리소스 모음
+        </span>
+        <span class="summary-arrow">▶</span>
+      </summary>
+      <div class="details-body">
+        <p style="font-size:13px;">
+          실제 웹 검색은 실패했지만, 2024년까지의 트렌드를 바탕으로 
+          <strong>실제 존재하거나 유사 프로그램이 있을 가능성이 높은 리소스</strong>를 정리했습니다.
+        </p>
+
+        <div class="pill-links">
+          <a class="pill" href="https://boostcamp.connect.or.kr" target="_blank">
+            네이버 부스트캠프 웹·모바일
+            <span>공식</span>
+          </a>
+          <a class="pill" href="https://tech.kakao.com" target="_blank">
+            카카오 테크/클라우드 관련 페이지
+            <span>공식 블로그</span>
+          </a>
+          <a class="pill" href="https://woowacourse.github.io" target="_blank">
+            우아한테크코스 FE/BE
+            <span>공식</span>
+          </a>
+          <a class="pill" href="https://www.inflearn.com" target="_blank">
+            인프런 Next.js · 성능 최적화 강의
+            <span>플랫폼</span>
+          </a>
+          <a class="pill" href="https://fastcampus.co.kr" target="_blank">
+            패스트캠퍼스 Node.js/NestJS 백엔드
+            <span>플랫폼</span>
+          </a>
+          <a class="pill" href="https://techit.education" target="_blank">
+            멋쟁이사자처럼 테크스쿨
+            <span>교육</span>
+          </a>
+          <a class="pill" href="https://cloud.google.com/training" target="_blank">
+            Google Cloud Hands-on Labs
+            <span>공식</span>
+          </a>
+          <a class="pill" href="https://www.ncloud.com/edu" target="_blank">
+            Naver Cloud 교육/핸즈온
+            <span>공식</span>
+          </a>
+        </div>
+
+        <h3>3-1. 왜 이 리소스들이 중요한가</h3>
+        <ul>
+          <li><strong>부스트캠프/우테코/테크스쿨:</strong> 코드 리뷰·팀 프로젝트·운영 경험을 통해 “실무형 백엔드/풀스택 역량”을 빠르게 검증받을 수 있습니다.</li>
+          <li><strong>인프런/패스트캠퍼스:</strong> 이미 쓰는 스택(React, Next.js, React Query)을 <strong>SSR·캐싱·성능 최적화</strong>까지 끌어올리고, 
+            Node.js/NestJS로 <strong>마이크로서비스·인증/권한·DB 설계</strong>를 실습하기 좋습니다.</li>
+          <li><strong>클라우드 핸즈온:</strong> 카카오 인프라/모니터링에 관심이 있다면, GCP/NCLOUD 기반 모니터링·로깅·배포 실습이 좋은 출발점입니다.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- 1개월 단기 로드맵 -->
+  <section class="card">
+    <div class="roadmap-title-row">
+      <h2>4. 1개월 단기 로드맵</h2>
+      <span class="tag">실전 준비 · 포지션 정렬</span>
+    </div>
+    <p class="muted">
+      목표: “프론트 중심 + 백엔드 확장” 포지션을 문서·포트폴리오·면접 답변에 일관되게 녹이고, 
+      <strong>작은 풀스택 실습 1개</strong>를 완성합니다.
+    </p>
+
+    <div class="roadmap-grid">
+      <!-- Week 1 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Week 1 · 스토리 정렬 & 자기소개서 리팩터링</span>
+          <span class="label">문서/브랜딩</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>목표:</strong> 문서·면접 간 포지션 괴리를 해소하고, “웹+앱 풀프론트엔드 · 백엔드 확장 중”을 명확히 선언.
+        </div>
+        <div class="roadmap-section-title">실행 액션</div>
+        <ul>
+          <li>자기소개서를 아래 구조로 재작성:
+            <span class="inline-kbd">1) 웹 FE · 2) RN 앱 · 3) 협업/제품 · 4) 강점/보완점 · 5) 학습 방식 · 6) 향후 목표</span></li>
+          <li>도입부/목표 문단을 제안 문장에 맞춰 수정해, <strong>성능/품질 + 웹·앱 + 성장 의지</strong>를 반복적으로 강조.</li>
+          <li>“백엔드 확장” 문단 추가:
+            <span class="inline-kbd">현재 FE 중심 / Node.js·DB·인프라 학습 중 / 1년 내 도메인 단위 서비스 책임</span>을 명시.</li>
+          <li>면접에서 자주 나올 3개 질문(자기소개, 강점/약점, 커리어 목표)에 대한 답변을 
+            <span class="inline-kbd">문제 → 행동 → 결과 → 배운 점</span> 구조로 1차 작성.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li>포트폴리오 리포트의 구조 제안 섹션 참고.</li>
+          <li>우아한테크코스/부스트캠프 합격 자기소개서 사례를 웹에서 검색해 문단 길이·톤 참고.</li>
+        </ul>
+      </div>
+
+      <!-- Week 2 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Week 2 · 포트폴리오 구조 개편 & 증빙 추가</span>
+          <span class="label">포트폴리오</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>목표:</strong> “성능 최적화 · 웹+앱 풀프론트엔드 · 지식 공유자” 브랜딩이 한눈에 보이도록 개편.
+        </div>
+        <div class="roadmap-section-title">실행 액션</div>
+        <ul>
+          <li>포트폴리오 상단에 <strong>요약 섹션</strong> 추가:
+            한 줄 소개, 핵심 스택 태그, 대표 프로젝트 2~3개 링크.</li>
+          <li>각 프로젝트를 <span class="inline-kbd">Problem · Action · Result</span> 구조로 재작성하고, 
+            역할 비중(예: 메인 피드 70% 구현)을 명시.</li>
+          <li>성능 개선/안정성 관련 프로젝트에 Lighthouse/Crashlytics Before-After 캡처 추가.</li>
+          <li>공통 컴포넌트/디자인 시스템이 있는 경우 Storybook 캡처와 간단한 설계 기준 문서 링크.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li>인프런/블로그에서 “프론트엔드 포트폴리오 잘 만드는 법” 검색.</li>
+          <li>GitHub Pages/Notion/Velog 등 현재 사용 중인 포트폴리오 호스팅 환경.</li>
+        </ul>
+      </div>
+
+      <!-- Week 3 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Week 3 · 미니 풀스택 프로젝트 (인증/권한)</span>
+          <span class="label">실습/백엔드</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>목표:</strong> Node.js/Express 또는 NestJS 기반 <strong>인증·권한·간단한 CRUD</strong> 서비스 1개 완성.
+        </div>
+        <div class="roadmap-section-title">실행 액션</div>
+        <ul>
+          <li>스택 결정: <span class="inline-kbd">Next.js (프론트) + NestJS/Express (백엔드) + MySQL/PostgreSQL + Prisma/TypeORM</span>.</li>
+          <li>기능 범위:
+            <ul>
+              <li>이메일/비밀번호 회원가입·로그인 (JWT 기반)</li>
+              <li>역할 기반 권한 (예: USER/ADMIN)</li>
+              <li>간단한 리소스 CRUD (예: 게시글, 할 일 등)</li>
+            </ul>
+          </li>
+          <li>ERD 1장, API 스펙 문서 1장 작성 후 구현.</li>
+          <li>README에 “왜 이런 설계를 했는지”와 향후 확장 아이디어(레이트 리미트, 캐시, MQ 등) 간단히 정리.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li><a href="https://fastcampus.co.kr" target="_blank">패스트캠퍼스 Node.js/NestJS 강의</a> 커리큘럼 참고.</li>
+          <li>“Node.js JWT 인증 튜토리얼”, “NestJS RBAC 예제” 검색.</li>
+        </ul>
+      </div>
+
+      <!-- Week 4 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Week 4 · 면접 대비 & 비언어 연습</span>
+          <span class="label">커뮤니케이션</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>목표:</strong> 핵심 질문 10개에 대한 답변 스크립트와, <strong>긴장 관리 루틴</strong>을 완성.
+        </div>
+        <div class="roadmap-section-title">실행 액션</div>
+        <ul>
+          <li>자주 나오는 질문(자기소개, 강점/약점, 협업 갈등, 성능 개선 사례, 실패 경험, 백엔드 학습 계획 등) 10개 선정.</li>
+          <li>각 질문에 대해 <span class="inline-kbd">문제 → 행동 → 결과 → 배운 점</span> 구조로 3~5줄 스크립트 작성.</li>
+          <li>카메라/휴대폰으로 3회 이상 모의 면접 녹화:
+            표정(중립+약한 미소), 시선, 말 속도, 말 끝 처리 체크.</li>
+          <li>복식호흡 + 1초 멈춤 + “천천히, 또렷하게” 자기 암시를 루틴으로 정리하고, 실제 녹화에서 적용.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li>“프론트엔드 개발자 면접 질문 모음” 검색.</li>
+          <li>유튜브 “개발자 면접 피드백” 영상으로 말 속도/톤 참고.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1년 장기 로드맵 -->
+  <section class="card">
+    <div class="roadmap-title-row">
+      <h2>5. 1년 장기 로드맵</h2>
+      <span class="tag">프론트 리드 · 백엔드 실증</span>
+    </div>
+    <p class="muted">
+      목표: 1년 안에 <strong>“웹+앱 풀프론트엔드 리드 후보”</strong>이자, 
+      <strong>“한 도메인 백엔드 서비스 설계·운영을 맡길 수 있는 수준”</strong>으로 성장하는 것을 가정합니다.
+    </p>
+
+    <div class="roadmap-grid">
+      <!-- Phase 1 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Phase 1 (1~2개월) · 포지셔닝 확립 & 미니 백엔드 2개</span>
+          <span class="label">브랜딩/기초 실습</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>마일스톤:</strong> GitHub에 <strong>백엔드/풀스택 레포 2개</strong> 공개, 포트폴리오에 “백엔드 실습” 섹션 추가.
+        </div>
+        <div class="roadmap-section-title">추천 활동</div>
+        <ul>
+          <li>1개월 로드맵의 미니 풀스택 프로젝트를 리팩터링하고, 테스트 코드(Jest/RTL, 최소 10개) 추가.</li>
+          <li>두 번째 미니 서비스(예: 간단한 통계 대시보드 API, 캐시/페이지네이션 포함) 구현.</li>
+          <li>각 레포에 “아키텍처 다이어그램 + ERD + API 문서 + 회고”를 README에 정리.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li>“Node.js 레이어드 아키텍처 예제”, “NestJS Clean Architecture” 검색.</li>
+        </ul>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Phase 2 (3~4개월) · 성능/품질 특화 & 팀 내 표준화</span>
+          <span class="label">FE 리드 역량</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>마일스톤:</strong> 현재/다음 회사에서 <strong>성능/품질 개선 가이드</strong>를 문서화하고, 팀에 공유.
+        </div>
+        <div class="roadmap-section-title">추천 활동</div>
+        <ul>
+          <li>현재 서비스(또는 사이드 프로젝트)에 대해 Lighthouse/Web Vitals 측정 → 개선 계획 수립 → Before/After 리포트 작성.</li>
+          <li>React/Next.js 성능 최적화 강의(인프런 등) 1개 수강 후, 배운 내용을 실제 코드에 적용.</li>
+          <li>스토리북 기반 디자인 시스템/공통 컴포넌트 정리 및 팀 공유(또는 사이드 프로젝트에 도입).</li>
+          <li>팀/스터디에서 “성능 최적화/품질 관리” 발표 1회 진행.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li><a href="https://www.inflearn.com" target="_blank">인프런 성능 최적화/Next.js 실전 강의</a></li>
+        </ul>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Phase 3 (5~6개월) · DB/인덱스 & 마이크로서비스 입문</span>
+          <span class="label">백엔드 심화</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>마일스톤:</strong> 실제 쿼리 튜닝/인덱스 실험 결과를 블로그/포트폴리오에 게시, 
+          <strong>간단한 마이크로서비스 구조</strong> 1개 구현.
+        </div>
+        <div class="roadmap-section-title">추천 활동</div>
+        <ul>
+          <li>MySQL/PostgreSQL로 샘플 서비스 스키마 설계 후, 인덱스 전략/EXPLAIN 분석/쿼리 튜닝 실습.</li>
+          <li>“사용자 서비스 + 인증 서비스 + 알림 서비스” 정도의 작은 마이크로서비스 프로젝트 구성:
+            API Gateway, 서비스 간 통신(REST/메시지 큐) 포함.</li>
+          <li>rate limiting, Redis 캐시, 멱등 처리 등 면접에서 언급했던 개념을 실제 코드로 구현.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li>“MySQL 인덱스 튜토리얼”, “NestJS microservices Kafka/Redis” 검색.</li>
+        </ul>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Phase 4 (7~9개월) · 운영/모니터링 & 클라우드</span>
+          <span class="label">운영 관점 강화</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>마일스톤:</strong> 개인/팀 서비스에 <strong>모니터링 대시보드 + 알림</strong>을 붙이고, 장애/성능 이슈 회고 1건 작성.
+        </div>
+        <div class="roadmap-section-title">추천 활동</div>
+        <ul>
+          <li>간단한 Node.js API 서버에 Prometheus+Grafana 또는 Sentry/Datadog 등 모니터링 도입.</li>
+          <li>요청 수, 에러율, 레이턴시, DB 쿼리 시간 등을 시각화하고, 슬랙/메일 알림 설정.</li>
+          <li>의도적으로 에러/지연을 발생시켜(예: DB 슬로우 쿼리), 모니터링으로 탐지·대응하는 실습.</li>
+          <li>클라우드 핸즈온 랩(GCP/네이버 클라우드)에서 배포/스케일링/로그 수집 실습.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li><a href="https://cloud.google.com/training" target="_blank">Google Cloud Training</a>, 
+              <a href="https://www.ncloud.com/edu" target="_blank">Naver Cloud 교육</a></li>
+        </ul>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-header">
+          <span>Phase 5 (10~12개월) · 캠프/부트캠프 & 포지션 업그레이드</span>
+          <span class="label">커리어 전환/도약</span>
+        </div>
+        <div class="roadmap-meta">
+          <strong>마일스톤:</strong> 부스트캠프/우테코/테크스쿨 등 <strong>1개 이상 지원/참여</strong>, 
+          혹은 “프론트+백엔드”를 모두 요구하는 포지션으로 이직/내부 이동 시도.
+        </div>
+        <div class="roadmap-section-title">추천 활동</div>
+        <ul>
+          <li>지금까지 만든 프로젝트/문서를 정리해 “풀스택/백엔드 성장 스토리” 발표 자료 1개 제작.</li>
+          <li>네이버 부스트캠프, 우아한테크코스, 멋쟁이사자처럼 테크스쿨 등 지원(또는 유사 과정 검색).</li>
+          <li>채용 공고에서 “프론트 중심 + 백엔드 경험 우대” 포지션을 타깃으로 이력서/포트폴리오 최적화.</li>
+          <li>면접에서 <strong>“여기까지는 실무, 여기부터는 실습/이상 설계”</strong>를 명확히 구분해 설명하는 연습.</li>
+        </ul>
+        <div class="roadmap-section-title">자료/링크</div>
+        <ul>
+          <li><a href="https://boostcamp.connect.or.kr" target="_blank">네이버 부스트캠프</a>, 
+              <a href="https://woowacourse.github.io" target="_blank">우아한테크코스</a>, 
+              <a href="https://techit.education" target="_blank">테크스쿨</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 빠른 액션 리스트 -->
+  <section class="card quick-actions">
+    <div class="card-header">
+      <h2>6. 이번 달에 꼭 할 6~8가지 액션</h2>
+      <span class="tag">우선순위 체크리스트</span>
+    </div>
+
+    <details open>
+      <summary>
+        <span class="summary-label">
+          <span class="summary-icon">A</span>
+          바로 실행할 액션 체크리스트
+        </span>
+        <span class="summary-arrow">▶</span>
+      </summary>
+      <div class="details-body">
+        <ul>
+          <li>자기소개서 도입부/목표 문단을 <strong>“웹+앱 풀프론트엔드 · 성능/품질 · 백엔드 확장”</strong>이 드러나도록 리라이트.</li>
+          <li>포트폴리오 상단에 요약 섹션(한 줄 소개, 핵심 스택, 대표 프로젝트 2~3개)을 추가하고, 
+              각 프로젝트를 <span class="inline-kbd">Problem · Action · Result</span> 구조로 재작성.</li>
+          <li>Next.js + Node.js/NestJS + RDB 조합으로 <strong>인증/권한 포함 미니 풀스택 서비스 1개</strong>를 완성하고 GitHub에 공개.</li>
+          <li>해당 서비스의 ERD, API 스펙, 아키텍처 다이어그램, 회고를 README에 정리해 “백엔드 실습” 섹션으로 포트폴리오에 연결.</li>
+          <li>Lighthouse/Web Vitals 기준으로 기존 프로젝트 1개를 측정 → 개선 → Before/After 캡처를 포트폴리오에 추가.</li>
+          <li>면접 핵심 질문 10개를 선정해, <span class="inline-kbd">문제 → 행동 → 결과 → 배운 점</span> 구조의 스크립트를 작성하고 3회 이상 카메라 모의 면접.</li>
+          <li>복식호흡 + 1초 멈춤 + 말 끝 또렷하게 말하기를 포함한 <strong>“면접 전 루틴”</strong>을 문서로 만들어 연습.</li>
+          <li>부스트캠프/우테코/테크스쿨 등 관심 있는 프로그램 2~3개를 조사하고, 지원 일정/요건을 캘린더에 기록.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+</div>
+</body>
+</html>
+```
