@@ -1,0 +1,584 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>프론트엔드 커리어 대시보드 – 맞춤 로드맵</title>
+  <style>
+    :root {
+      --bg: #F5F5F5;
+      --panel: #FFFFFF;
+      --highlight-bg: #0A193D;
+      --text-main: #0A091A;
+      --text-sub: #555555;
+      --accent: #0A193D;
+      --pill-bg: #E0E0E0;
+      --shadow-soft: 0 8px 20px rgba(0,0,0,0.06);
+      --radius-card: 14px;
+      --radius-pill: 999px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 12px 40px;
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Pretendard", system-ui, sans-serif;
+    }
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    h1, h2, h3, h4 {
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    p {
+      margin: 0 0 6px;
+      line-height: 1.5;
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+    .header {
+      margin-bottom: 20px;
+    }
+    .header-card {
+      background: var(--highlight-bg);
+      color: #FFFFFF;
+      border-radius: 18px;
+      padding: 20px 20px 16px;
+      box-shadow: var(--shadow-soft);
+    }
+    .header-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .header-sub {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .tag-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.06);
+      white-space: nowrap;
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: var(--radius-card);
+      padding: 16px 18px 14px;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 14px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .card-meta {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    details {
+      border-radius: 12px;
+      background: #FAFAFA;
+      padding: 8px 10px;
+      margin-top: 6px;
+    }
+    summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::before {
+      content: "▸";
+      font-size: 11px;
+      color: var(--accent);
+      transform: translateY(0.5px);
+    }
+    details[open] summary::before {
+      content: "▾";
+    }
+    .detail-body {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    ul, ol {
+      margin: 4px 0 6px 18px;
+      padding: 0;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    li { margin-bottom: 3px; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--pill-bg);
+      font-size: 11px;
+      color: var(--text-main);
+      text-decoration: none;
+      border: 1px solid #D3D3D3;
+      white-space: nowrap;
+    }
+    .pill-source {
+      font-size: 10px;
+      color: #777777;
+    }
+
+    .roadmap-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    @media (min-width: 820px) {
+      .roadmap-grid {
+        flex-direction: row;
+      }
+    }
+    .roadmap-card {
+      flex: 1;
+      background: #FAFAFA;
+      border-radius: 14px;
+      padding: 10px 12px 10px;
+      border: 1px solid #E3E3E3;
+    }
+    .roadmap-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+    .roadmap-sub {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+    .step {
+      margin-bottom: 6px;
+      padding: 6px 7px;
+      border-radius: 10px;
+      background: #FFFFFF;
+      border: 1px solid #ECECEC;
+    }
+    .step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+    .step-line {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 1px;
+    }
+    .step-line span {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .bullet-compact li {
+      font-size: 13px;
+    }
+
+    .highlight-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(10,25,61,0.06);
+      font-size: 11px;
+      color: var(--accent);
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 헤더 -->
+  <section class="header">
+    <div class="header-card">
+      <div class="header-title">프론트엔드 커리어 대시보드 · 맞춤 로드맵</div>
+      <div class="header-sub">
+        React / React Native 중심의 웹·모바일 프론트엔드 개발자로 성장하기 위한
+        1개월·1년 로드맵과 인터뷰/포트폴리오 개선 포인트를 한 페이지에 정리했습니다.
+      </div>
+      <div class="tag-row">
+        <span class="tag">React · React Native</span>
+        <span class="tag">포트폴리오 개선</span>
+        <span class="tag">면접 커뮤니케이션</span>
+        <span class="tag">성능 & UX</span>
+        <span class="tag">1개월 · 1년 로드맵</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Debate 최종 요약 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">면접 평가 요약 & 핵심 개선 포인트</div>
+      <div class="card-meta">Debate Report 기반</div>
+    </div>
+    <details open>
+      <summary>(1) Debate 최종 요약</summary>
+      <div class="detail-body">
+        <p><strong>종합 인상</strong>: 프론트엔드 실무 경험(React, React Native, 성능·UX 개선)은 신뢰도가 높지만, 백엔드 직무 면접에서 질문 의도 파악 실패·백엔드 이해 부족·감정 조절 실패로 인해 <strong>조직 적합성과 프로페셔널리즘에 큰 리스크</strong>가 드러난 상태입니다.</p>
+        <ul>
+          <li><strong>강점</strong>
+            <ul>
+              <li>React 기반 SPA 전환, 성능 개선, 모바일 앱 개발 등 <strong>프론트엔드 핵심 경험이 일관적</strong>.</li>
+              <li>모바일 vs 웹 UX 차이, 오프라인/네트워크 고려 등 <strong>모바일 UX 감각</strong> 보유.</li>
+              <li>Crashlytics/Sentry 등 모니터링 도구 사용 경험, LCP 개선 등 <strong>사용자 경험·성능에 대한 문제의식</strong>.</li>
+            </ul>
+          </li>
+          <li><strong>주요 리스크</strong>
+            <ul>
+              <li>질문 의도를 거의 따라가지 못하고, <strong>질문-답변 연관성이 크게 부족</strong>.</li>
+              <li>백엔드 핵심 개념(Node.js, REST API, DB, 캐시, 모니터링 지표 등)에 대한 <strong>이해·표현 부족</strong>.</li>
+              <li>압박 상황에서 욕설·분노 표현 등 <strong>감정 조절 실패와 비프로페셔널한 언어 사용</strong>.</li>
+              <li>자기소개서의 “협업·소통 중시”와 실제 태도 사이의 <strong>일관성 붕괴</strong>.</li>
+            </ul>
+          </li>
+          <li><strong>단기 개선 방향</strong>
+            <ul>
+              <li>프론트엔드 포지션에 집중하고, 백엔드는 <strong>“협업을 위한 기초 이해” 수준</strong>으로 정리.</li>
+              <li>면접에서 STAR 구조(상황-과제-행동-결과)로 말하는 연습과, <strong>감정 조절·언어 사용 훈련</strong> 필수.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- 포트폴리오/답변 통합 요약 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">포트폴리오 & 답변 통합 요약</div>
+      <div class="card-meta">문서 + 답변 기반</div>
+    </div>
+    <details open>
+      <summary>(2) 포트폴리오/답변 통합 요약</summary>
+      <div class="detail-body">
+        <p><strong>커리어 포지셔닝</strong>: “웹 + 모바일 모두 다루는 React 기반 프론트엔드 개발자”로 포지셔닝하는 것이 가장 설득력 있습니다.</p>
+        <ul>
+          <li><strong>이미 잘 되어 있는 부분</strong>
+            <ul>
+              <li>자연스러운 커리어 스토리: 전공 → 스타트업 웹 → 모바일 앱 → 프리랜서/사이드 프로젝트.</li>
+              <li>웹 SPA 마이그레이션, LCP 개선, 모바일 앱 신규 개발 등 <strong>실제 서비스 임팩트</strong>가 있는 경험.</li>
+              <li>주간 데모 세션, 협업 프로세스 개선 등 <strong>커뮤니케이션 사례</strong>가 문서에 잘 정리됨.</li>
+            </ul>
+          </li>
+          <li><strong>포트폴리오 측 개선 포인트</strong>
+            <ul>
+              <li>문단이 길어 스캔이 어렵고, <strong>정량 성과(LCP, 이탈률, 다운로드 수)</strong>가 뒤에 숨어 있음.</li>
+              <li>기술 스택이 나열형이라, <strong>주력 vs 사용 경험</strong> 구분이 불명확.</li>
+              <li>각 프로젝트에서 “내가 없었으면 안 됐을 부분”이 더 강조되면 좋음.</li>
+            </ul>
+          </li>
+          <li><strong>면접 답변 측 개선 포인트</strong>
+            <ul>
+              <li>프로젝트 설명이 구조 없이 흘러가고, <strong>용어·발음 오류</strong>가 많아 전문성이 희석됨.</li>
+              <li>모바일 vs 웹 UX 차이를 알고는 있으나, <strong>구체 사례·지표</strong>가 부족.</li>
+              <li>스트레스 상황에서 욕설·공격적 태도가 나와, <strong>조직 적합성에 치명적</strong>.</li>
+            </ul>
+          </li>
+          <li><strong>통합 방향</strong>
+            <ul>
+              <li>문서(이력서·포트폴리오)에서 강조한 협업·성능·UX 스토리를, 면접에서도 <strong>동일한 구조와 톤</strong>으로 말하기.</li>
+              <li>“모르는 건 솔직히 인정하되, 차분하게 설명하는 태도”를 기본값으로 훈련.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- 검색 인사이트 및 추천 링크 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">검색 인사이트 & 추천 학습 리소스</div>
+      <div class="card-meta">웹 검색 시도 + 업계 동향</div>
+    </div>
+    <details open>
+      <summary>(3) 검색 인사이트 및 추천 링크</summary>
+      <div class="detail-body">
+        <p>duckduckgo 검색은 실패했지만, 2024년까지의 업계 동향과 국내외에서 널리 쓰이는 학습 리소스를 기반으로 정리했습니다.</p>
+        <p><strong>핵심 인사이트</strong></p>
+        <ul>
+          <li>React/TypeScript/Next.js는 여전히 국내 프론트엔드 채용의 <strong>주력 스택</strong>입니다.</li>
+          <li>React Query, 성능 최적화(Core Web Vitals), 디자인 시스템(Storybook) 경험이 있으면 <strong>시니어가 아니어도 차별화</strong>됩니다.</li>
+          <li>React Native는 “웹 경험 + 모바일 확장” 포지션에서 강점이 될 수 있어, <strong>RN + 배포 경험</strong>을 정리해 두면 좋습니다.</li>
+          <li>국내에서는 우아한테크코스, 부스트캠프, 라인/카카오 부트캠프 등 <strong>코드리뷰·팀 프로젝트 중심 프로그램</strong>이 여전히 높은 신뢰를 받습니다.</li>
+        </ul>
+
+        <p><strong>추천 링크 (pill 형태, 중복 제거 · 최대 10개)</strong></p>
+        <div class="pill-row">
+          <a class="pill" href="https://fastcampus.co.kr" target="_blank">
+            FastCampus – 프론트엔드 패키지
+            <span class="pill-source">출처: fastcampus.co.kr</span>
+          </a>
+          <a class="pill" href="https://inflearn.com" target="_blank">
+            Inflearn – React/Next.js 실전
+            <span class="pill-source">출처: inflearn.com</span>
+          </a>
+          <a class="pill" href="https://woowacourse.github.io" target="_blank">
+            우아한테크코스 프론트엔드
+            <span class="pill-source">출처: woowacourse.github.io</span>
+          </a>
+          <a class="pill" href="https://codesquad.kr" target="_blank">
+            코드스쿼드 프론트엔드
+            <span class="pill-source">출처: codesquad.kr</span>
+          </a>
+          <a class="pill" href="https://boostcamp.connect.or.kr" target="_blank">
+            네이버 부스트캠프 웹·모바일
+            <span class="pill-source">출처: boostcamp.connect.or.kr</span>
+          </a>
+          <a class="pill" href="https://careers.linecorp.com" target="_blank">
+            LINE Dev Course 안내
+            <span class="pill-source">출처: careers.linecorp.com</span>
+          </a>
+          <a class="pill" href="https://tech.kakao.com" target="_blank">
+            카카오 테크 부트캠프 공지
+            <span class="pill-source">출처: tech.kakao.com</span>
+          </a>
+          <a class="pill" href="https://www.udemy.com" target="_blank">
+            Udemy – React Native + TS
+            <span class="pill-source">출처: udemy.com</span>
+          </a>
+          <a class="pill" href="https://web.dev" target="_blank">
+            Google Web.dev · Lighthouse
+            <span class="pill-source">출처: web.dev</span>
+          </a>
+          <a class="pill" href="https://storybook.js.org" target="_blank">
+            Storybook Design Systems
+            <span class="pill-source">출처: storybook.js.org</span>
+          </a>
+        </div>
+
+        <p style="margin-top:8px;"><strong>추천 검색 키워드</strong></p>
+        <ul>
+          <li>“React 프론트엔드 개발자 커리어 로드맵 2025”</li>
+          <li>“Next.js React Query 성능 최적화 실무 예제”</li>
+          <li>“React Native 하이브리드 앱 iOS Android 배포 강의”</li>
+          <li>“웹 프론트엔드 개발자 면접 질문 React TypeScript”</li>
+          <li>“디자인 시스템 Storybook 구축 방법”</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- 1개월 & 1년 로드맵 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">1개월 · 1년 커리어 로드맵</div>
+      <div class="card-meta">프론트엔드 집중 성장 플랜</div>
+    </div>
+
+    <div class="roadmap-grid">
+      <!-- 1개월 단기 로드맵 -->
+      <div class="roadmap-card">
+        <div class="roadmap-title">1개월 단기 로드맵</div>
+        <div class="roadmap-sub">
+          목표: 프론트엔드 포지션에 맞는 포트폴리오·면접 메시지를 재정렬하고,
+          감정 조절·커뮤니케이션 리스크를 빠르게 줄입니다.
+        </div>
+
+        <div class="step">
+          <div class="step-label">Week 1 · 포지셔닝 & 자기소개서 리팩터링</div>
+          <div class="step-line"><span>목표</span>: “웹+모바일 React 프론트엔드”로 명확히 포지셔닝.</div>
+          <div class="step-line"><span>실행</span>: 
+            자기소개서 도입부·경력 요약을 제안 문구처럼 재작성하고,
+            각 프로젝트의 <strong>한 줄 임팩트 + 정량 지표</strong>를 앞으로 배치.
+          </div>
+          <div class="step-line">
+            <span>자료</span>: 본 대시보드의 문장 예시, <a href="https://fastcampus.co.kr" target="_blank">FastCampus</a>·
+            <a href="https://inflearn.com" target="_blank">Inflearn</a>의 취업용 이력서 예시 참고.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-label">Week 2 · 포트폴리오 구조 개편 & 산출물 보강</div>
+          <div class="step-line"><span>목표</span>: 리크루터가 1분 안에 강점을 파악할 수 있는 포트폴리오.</div>
+          <div class="step-line"><span>실행</span>: 
+            상단에 “프로필·핵심 스킬·대표 프로젝트 3개” 요약 섹션 추가,
+            각 프로젝트에 <strong>문제 → 행동 → 결과</strong> 구조와 실제 화면/데모 링크, 지표 추가.
+          </div>
+          <div class="step-line">
+            <span>자료</span>: <a href="https://web.dev" target="_blank">web.dev</a>의 LCP/성능 지표 설명,
+            개인 GitHub/배포 URL, Storybook 또는 디자인 시스템 캡처.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-label">Week 3 · 프로젝트 설명 스크립트 & 모의 면접</div>
+          <div class="step-line"><span>목표</span>: 질문-답변 연관성이 높은, 구조화된 말하기 습득.</div>
+          <div class="step-line"><span>실행</span>: 
+            대표 3개 프로젝트에 대해 A4 1장 이내 스크립트 작성
+            (상황·과제·행동·결과 + 사용 기술 + 내가 주도한 결정) 후,
+            친구/스터디와 2회 이상 모의 면접 녹화·피드백.
+          </div>
+          <div class="step-line">
+            <span>자료</span>: “프론트엔드 면접 질문 리스트” 검색, Zoom/Meet 녹화, 
+            <a href="https://inflearn.com" target="_blank">Inflearn</a> 면접 대비 강의 참고.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-label">Week 4 · 감정 조절·언어 사용 훈련 & 지원 전략 수립</div>
+          <div class="step-line"><span>목표</span>: 압박 질문에서도 프로페셔널한 태도를 유지하는 기본기 확보.</div>
+          <div class="step-line"><span>실행</span>: 
+            <strong>욕설·비속어 완전 금지</strong>를 스스로에게 선언하고,
+            모르는 질문에 사용할 “완충 문장” 템플릿(예: “제가 아는 범위에서 말씀드리면…”)을 5개 이상 준비.
+            거울/카메라 앞에서 표정·톤 점검, 하루 10분 호흡 연습.
+          </div>
+          <div class="step-line">
+            <span>자료</span>: 유튜브 “개발자 면접 태도”, “스트레스 상황 대화법” 영상,
+            <a href="https://boostcamp.connect.or.kr" target="_blank">부스트캠프</a>·
+            <a href="https://woowacourse.github.io" target="_blank">우테코</a> 후기 글 참고.
+          </div>
+        </div>
+      </div>
+
+      <!-- 1년 장기 로드맵 -->
+      <div class="roadmap-card">
+        <div class="roadmap-title">1년 장기 로드맵</div>
+        <div class="roadmap-sub">
+          목표: “웹+모바일 프론트엔드 실무자”에서 “성능·UX·협업에 강한 시니어 후보”로 성장할 수 있는 기반을 다집니다.
+        </div>
+
+        <div class="step">
+          <div class="step-label">1–2개월차 · 프론트엔드 코어 정리</div>
+          <div class="step-line"><span>목표</span>: React/TypeScript/Next.js 기반 웹 역량을 탄탄히.</div>
+          <div class="step-line"><span>마일스톤</span>: 
+            Next.js + React Query로 개인 프로젝트 1개 완성, Lighthouse 점수 90+ 달성.
+          </div>
+          <div class="step-line">
+            <span>활동/자료</span>: 
+            <a href="https://inflearn.com" target="_blank">Inflearn</a> 또는 
+            <a href="https://fastcampus.co.kr" target="_blank">FastCampus</a>의 Next.js 실전 강의 수강,
+            <a href="https://web.dev" target="_blank">web.dev</a> Core Web Vitals 가이드로 성능 개선 실습.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-label">3–4개월차 · React Native & 모바일 UX 강화</div>
+          <div class="step-line"><span>목표</span>: RN 앱 1개를 스토어 또는 테스트 빌드까지 배포.</div>
+          <div class="step-line"><span>마일스톤</span>: 
+            iOS/Android 빌드 경험, Crashlytics/Sentry 연동, 크래시율 개선 리포트 1건 작성.
+          </div>
+          <div class="step-line">
+            <span>활동/자료</span>: 
+            <a href="https://www.udemy.com" target="_blank">Udemy</a> RN + TS 강의 수강,
+            “모바일 vs 웹 UX 차이” 블로그 글 1편 작성,
+            실제 사용자의 피드백을 받아 1회 이상 UX 개선.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-label">5–6개월차 · 디자인 시스템 & 협업 프로세스</div>
+          <div class="step-line"><span>목표</span>: Storybook 기반 컴포넌트 라이브러리 구축 경험 확보.</div>
+          <div class="step-line"><span>마일스톤</span>: 
+            공통 UI 컴포넌트 15개 이상, Storybook 문서화, 간단한 디자인 토큰 적용.
+          </div>
+          <div class="step-line">
+            <span>활동/자료</span>: 
+            <a href="https://storybook.js.org" target="_blank">Storybook Design Systems</a> 튜토리얼,
+            팀/스터디와 “UI 컴포넌트 리뷰 세션” 2회 이상 진행.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-label">7–9개월차 · 팀 프로젝트 & 코드리뷰 문화 경험</div>
+          <div class="step-line"><span>목표</span>: 실제 팀 환경에서 협업·코드리뷰·배포 사이클 경험.</div>
+          <div class="step-line"><span>마일스톤</span>: 
+            3인 이상 팀 프로젝트 1개, PR 리뷰 20건 이상, 회고 문서 1건 작성.
+          </div>
+          <div class="step-line">
+            <span>활동/자료</span>: 
+            <a href="https://woowacourse.github.io" target="_blank">우테코</a>,
+            <a href="https://boostcamp.connect.or.kr" target="_blank">부스트캠프</a>,
+            <a href="https://codesquad.kr" target="_blank">코드스쿼드</a> 등 부트캠프 지원
+            또는 오픈소스/사이드 프로젝트 참여.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-label">10–12개월차 · 시니어 후보 포지셔닝 & 면접 준비</div>
+          <div class="step-line"><span>목표</span>: “성능·UX·협업에 강한 프론트엔드”로 시장에 재출시.</div>
+          <div class="step-line"><span>마일스톤</span>: 
+            포트폴리오 v2 공개, 기술 블로그 5편 이상, 모의 면접 5회 이상, 실제 지원 10곳 이상.
+          </div>
+          <div class="step-line">
+            <span>활동/자료</span>: 
+            “프론트엔드 시스템 디자인 인터뷰” 관련 자료 학습,
+            면접 질문 리스트를 만들어 답변 스크립트 정리,
+            <a href="https://careers.linecorp.com" target="_blank">LINE</a>,
+            <a href="https://tech.kakao.com" target="_blank">카카오</a> 등 지원.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 빠른 액션 리스트 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">지금 시작할 7가지 액션</div>
+      <div class="card-meta">실행 우선순위</div>
+    </div>
+    <details open>
+      <summary>(4) 빠른 액션 체크리스트</summary>
+      <div class="detail-body">
+        <ul class="bullet-compact">
+          <li>자기소개서 도입부를 “웹+모바일 React 프론트엔드” 포지션에 맞게 5줄 이내로 재작성하고, 각 프로젝트에 <strong>정량 지표</strong>를 한 줄씩 추가한다.</li>
+          <li>포트폴리오 상단에 “프로필 · 핵심 스킬 · 대표 프로젝트 3개” 요약 섹션을 만들고, 기술 스택을 <strong>주력 / 사용 경험</strong>으로 구분한다.</li>
+          <li>대표 3개 프로젝트에 대해 STAR 구조 스크립트를 작성하고, 2회 이상 모의 면접을 녹화해 <strong>질문-답변 연관성</strong>과 말투를 점검한다.</li>
+          <li>욕설·비속어를 완전히 배제하고, 모르는 질문에 사용할 <strong>완충 문장 템플릿</strong> 5개를 메모해 매일 소리 내어 연습한다.</li>
+          <li>Next.js + React Query 개인 프로젝트를 하나 선정해, Lighthouse 90+를 목표로 <strong>성능 개선 실험</strong>을 진행하고 결과를 블로그에 정리한다.</li>
+          <li>React Native 앱(또는 기존 앱)을 대상으로 Crashlytics/Sentry를 연동하고, <strong>크래시 리포트 분석 → 개선</strong> 과정을 문서화한다.</li>
+          <li>올해 안에 도전할 부트캠프/교육 프로그램(우테코, 부스트캠프 등)을 1~2개 선정해, <strong>지원 일정·요건</strong>을 캘린더에 기록하고 준비를 시작한다.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+</div>
+</body>
+</html>
+```

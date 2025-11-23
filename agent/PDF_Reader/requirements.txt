@@ -1,0 +1,4 @@
+pymupdf==1.26.6
+fastapi>=0.110
+uvicorn>=0.23
+pydantic>=2.0
