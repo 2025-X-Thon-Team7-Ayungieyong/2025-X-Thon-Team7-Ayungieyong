@@ -52,7 +52,7 @@ function InterviewRecord() {
   // const streamRef = useRef(null);
 
   const [error, setError] = useState('');
-  const [timeLeft, setTimeLeft] = useState(5); // timer 시간 설정
+  const [timeLeft, setTimeLeft] = useState(30); // timer 시간 설정
   const [recording, setRecording] = useState(false);
 
   // 팝업 상태
@@ -64,7 +64,7 @@ function InterviewRecord() {
     const timer = setTimeout(() => {
       setShowPopup(false); // 팝업 숨기기
       startInterviewProcess(); // 스트림 연결 + 녹화 시작
-    }, 7000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [questionIndex]);
