@@ -125,7 +125,7 @@ function InterviewQuestionPage() {
           color: 'white',
         }}
       >
-        카카오 백앤드
+        카카오 백엔드
       </div>
       {/* 전체 wrapper */}
       <div className="interview-card-wrapper">
