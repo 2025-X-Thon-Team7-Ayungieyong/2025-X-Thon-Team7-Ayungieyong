@@ -10,11 +10,35 @@
 
 ## 📋 목차
 
+- [구현 화면](#-구현-화면)
 - [핵심 기능](#-핵심-기능)
 - [프로젝트 전체 워크플로우](#-프로젝트-전체-워크플로우)
 - [기술 스택](#-기술-스택)
 - [프로젝트 구조](#-프로젝트-구조)
 - [출력 결과물](#-출력-결과물)
+
+
+---
+
+## 📌 구현 화면
+
+
+<p align="center">
+  <img width="1919" height="756" alt="스크린샷 2025-11-23 143303" src="https://github.com/user-attachments/assets/0ba5fa26-0739-4c4c-b025-c30aacf511ec" />
+  <br><div align="center">과거 면접 기록 조회 & 새 면접 생성</div>
+</p>
+<p align="center">
+  <img width="1084" height="484" alt="스크린샷 2025-11-23 143555" src="https://github.com/user-attachments/assets/4a6f64ca-e60d-4a7a-8db5-007e10b71db0" />
+  <br><div align="center">자기소개서 및 포트폴리오 PDF 업로드</div>
+</p>
+<p align="center">
+  <img width="1087" height="485" alt="스크린샷 2025-11-23 143640" src="https://github.com/user-attachments/assets/b297a04d-3895-4881-b843-e0c53040e167" />
+  <br><div align="center">화상 면접 진행 및 .mp4 파일 저장</div>
+</p>
+<p align="center">
+  <img width="1086" height="481" alt="스크린샷 2025-11-23 143616" src="https://github.com/user-attachments/assets/366badd1-5c37-46ea-b0d1-65e6b2044f55" />
+  <br><div align="center">면접 결과 총평 및 최종 보고서 다운로드</div>
+</p>
 
 ---
 
@@ -30,7 +54,7 @@
 - **음성 텍스트 변환 (STT)**: Wav2Vec2 한국어 모델로 음성을 텍스트로 자동 전사
 - **병렬 처리**: 질문 3개에 대한 6개 분석(얼굴 3개 + 음성 3개) 동시 실행
 
-### 3️⃣ Multi-Agent 평가 시스템 ⭐
+### 3️⃣ Multi-Agent 평가 시스템 
 3개의 독립적인 AI 에이전트가 각자의 전문 영역에서 평가를 수행:
 
 | 에이전트 | 평가 영역 | 주요 기능 |
@@ -39,7 +63,7 @@
 | **Q&A Relevance Agent** | 답변 품질 | 질문과 답변 간 연관성, 구체성, 명확성 평가 (1-10점 척도) |
 | **Consistency Agent** | 일관성 검증 | 자기소개서/포트폴리오와 면접 답변 간 진실성 및 일치성 검증 |
 
-### 4️⃣ Multi-Agent Debate (7-Round) 🔥
+### 4️⃣ Multi-Agent Debate (7-Round) 
 3개 에이전트가 **7단계 토론**을 통해 최종 합의 도출:
 
 ```
@@ -221,7 +245,7 @@ Round 7: 최종 합의 도출 (Final Consensus) ✅
 │
 ├── agent/                      # Python AI/ML 마이크로서비스
 │   ├── admin/                  # LangGraph 오케스트레이터
-│   │   ├── graph.py            # ⭐ Multi-Agent Workflow 정의 (1913줄)
+│   │   ├── graph.py            # Multi-Agent Workflow 정의
 │   │   ├── server.py           # FastAPI 서버 (/start, /upload, /status)
 │   │   ├── session_manager.py # Session 상태 관리
 │   │   └── requirements.txt
@@ -283,20 +307,20 @@ Round 7: 최종 합의 도출 (Final Consensus) ✅
 │   │   │   │
 │   │   │   ├── Home_PopUp/
 │   │   │   │   ├── Home.js           # 홈 페이지
-│   │   │   │   └── PopUp.js          # 회사/문서 업로드 팝업
+│   │   │   │   └── PopUp.js          # 자기소개서 및 포트폴리오 업로드 팝업
 │   │   │   │
 │   │   │   └── Interview/
-│   │   │       ├── InterviewRecord.js    # 면접 녹화 인터페이스
-│   │   │       ├── InterviewQuestion.js  # 질문 표시
-│   │   │       └── InterviewSummary.js   # 최종 결과 조회
+│   │   │       ├── InterviewRecord.js    # 면접 녹화 화면
+│   │   │       ├── InterviewQuestion.js  # 질문별 상세 피드백
+│   │   │       └── InterviewSummary.js   # 총평 확인인
 │   │   │
-│   │   ├── App.js              # 메인 라우터 (React Router)
-│   │   └── index.js            # 엔트리포인트
+│   │   ├── App.js              
+│   │   └── index.js            
 │   │
-│   ├── public/                 # 정적 파일
+│   ├── public/                
 │   └── package.json
 │
-└── README.md                   # 📄 이 문서
+└── README.md                  
 ```
 
 
@@ -332,12 +356,12 @@ outputs/
 ├── Evaluation_Consistency.csv                 # 문서-답변 일관성 데이터
 │
 ├── Debate_Log.txt                             # 7-Round Debate 전체 로그
-├── Debate_Final_Report.md                     # ⭐ 최종 합의 보고서 (Markdown)
+├── Debate_Final_Report.md                     # 최종 합의 보고서 (Markdown)
 │
 ├── Portfolio_Search_Results.txt               # DuckDuckGo 검색 결과
-├── Portfolio_Development_Report.md            # ⭐ 포트폴리오 개발 보고서
+├── Portfolio_Development_Report.md            # 포트폴리오 개발 보고서
 │
-└── Insight_Dashboard.html                     # ⭐ 통합 HTML 대시보드
+└── Insight_Dashboard.html                     # 통합 HTML 대시보드
 ```
 
 ### 왜 Multi-Agent Debate인가?
@@ -379,8 +403,6 @@ outputs/
 - [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
 - [py-feat Documentation](https://py-feat.org/)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
-- [React Router Documentation](https://reactrouter.com/)
 
 ---
 
-**Made with ❤️ by Team 7 @ 2025 X-Thon**
